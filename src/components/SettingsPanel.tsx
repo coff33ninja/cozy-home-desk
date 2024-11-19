@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { Settings } from '@/types/types';
+import { ServiceCredentials } from '@/types/types';
 import { getSettings, updateSettings } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -30,25 +31,27 @@ export const SettingsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<Settings>(getSettings());
 
-  const handleSettingChange = (key: keyof Settings, value: any) => {
-    const newSettings = { ...settings, [key]: value };
-    setSettings(newSettings);
-    updateSettings(newSettings);
-    
-    // Apply theme changes
-    if (key === 'theme') {
-      const theme = THEMES[value as keyof typeof THEMES];
-      document.documentElement.style.setProperty('--primary', theme.primary);
-      document.documentElement.style.setProperty('--background', theme.background);
-    }
-    
-    // Apply wallpaper
-    if (key === 'wallpaperUrl') {
+const handleSettingChange = (key: keyof Settings, value: any) => {
+  const newSettings = { ...settings, [key]: value };
+  setSettings(newSettings);
+  updateSettings(newSettings);
+
+  if (key === 'theme') {
+    const theme = THEMES[value as keyof typeof THEMES];
+    document.documentElement.style.setProperty('--primary', theme.primary);
+    document.documentElement.style.setProperty('--background', theme.background);
+  }
+
+  if (key === 'wallpaperUrl') {
+    if (value) {
       document.body.style.backgroundImage = `url(${value})`;
       document.body.style.backgroundSize = 'cover';
       document.body.style.backgroundPosition = 'center';
+    } else {
+      document.body.style.backgroundImage = '';
     }
-  };
+  }
+};
 
   return (
     <div className="fixed bottom-4 right-4">
@@ -62,8 +65,7 @@ export const SettingsPanel = () => {
       </Button>
 
       {isOpen && (
-        <div className="absolute bottom-16 right-0 w-80 p-4 bg-white/10 backdrop-blur-sm 
-                      rounded-lg animate-fade-in">
+        <div className="absolute bottom-16 right-0 w-80 p-4 bg-white/10 backdrop-blur-sm rounded-lg animate-fade-in">
           <h3 className="text-lg font-semibold mb-4">Settings</h3>
           
           <div className="space-y-6">
@@ -116,6 +118,52 @@ export const SettingsPanel = () => {
                 checked={settings.showMusic}
                 onCheckedChange={(checked) => handleSettingChange('showMusic', checked)}
               />
+            </div>
+
+            <div className="space-y-4">
+              <Label>Media Services Credentials</Label>
+              
+              {['radarr', 'sonarr', 'lidarr', 'qbittorrent'].map((service) => (
+                <div key={service} className="space-y-2">
+                  <Label>{service.charAt(0).toUpperCase() + service.slice(1)}</Label>
+                  <input
+                    type="url"
+                    placeholder="URL"
+                    value={(settings[`${service}Credentials` as keyof Settings] as ServiceCredentials)?.url || ''}
+                    onChange={(e) =>
+                      handleSettingChange(`${service}Credentials` as keyof Settings, {
+                        ...(settings[`${service}Credentials` as keyof Settings] as ServiceCredentials),
+                        url: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 rounded bg-white/20 mb-2"
+                  />
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={(settings[`${service}Credentials` as keyof Settings] as ServiceCredentials)?.username || ''}
+                  onChange={(e) =>
+                    handleSettingChange(`${service}Credentials` as keyof Settings, {
+                      ...(settings[`${service}Credentials` as keyof Settings] as ServiceCredentials),
+                      username: e.target.value,
+        })
+      }
+      className="w-full px-3 py-2 rounded bg-white/20 mb-2"
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      value={(settings[`${service}Credentials` as keyof Settings] as ServiceCredentials)?.password || ''}
+      onChange={(e) =>
+        handleSettingChange(`${service}Credentials` as keyof Settings, {
+          ...(settings[`${service}Credentials` as keyof Settings] as ServiceCredentials),
+          password: e.target.value,
+        })
+      }
+      className="w-full px-3 py-2 rounded bg-white/20"
+    />
+  </div>
+))}
             </div>
           </div>
         </div>

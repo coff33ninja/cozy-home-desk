@@ -4,19 +4,58 @@ import { Cloud, Sun, CloudRain } from 'lucide-react';
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<{temp?: number, condition?: string}>({});
 
+import { useEffect, useState } from 'react';
+import { Cloud, Sun, CloudRain } from 'lucide-react';
+
+type WeatherCondition = 'sunny' | 'cloudy' | 'rainy';
+
+interface WeatherData {
+  temp?: number;
+  condition?: WeatherCondition;
+}
+
+export const WeatherWidget = () => {
+  const [weather, setWeather] = useState<WeatherData>({});
+} 
+
   useEffect(() => {
-    // Mock weather data for now
-    setWeather({ temp: 22, condition: 'sunny' });
+    const fetchWeather = async () => {
+      try {
+        const response = await fetch('https://api.weather.com/data');
+        const data: WeatherData = await response.json();
+        setWeather(data);
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      }
+    };
+
+    fetchWeather();
   }, []);
 
+  const getWeatherIcon = () => {
+    switch (weather.condition) {
+      case 'sunny':
+        return <Sun />;
+      case 'cloudy':   
+        return <Cloud />;   
+      case 'rainy':       
+      return <CloudRain />;   
+      default:
+        return <Sun />;
+    };
+  };
   return (
-    <div className="p-4 bg-white/10 backdrop-blur-sm rounded-lg animate-fade-in">
-      <div className="flex items-center gap-2">
-        {weather.condition === 'sunny' && <Sun className="text-yellow-300" />}
-        {weather.condition === 'cloudy' && <Cloud className="text-gray-300" />}
-        {weather.condition === 'rainy' && <CloudRain className="text-blue-300" />}
-        <span className="text-xl font-semibold">{weather.temp}°C</span>
-      </div>
+    <div>
+      <h2>Weather</h2>
+      {weather.temp && (
+        <div>
+          <p>Temperature: {weather.temp}°C</p>
+          <p>{getWeatherIcon()}</p>
+        </div>
+      )}
     </div>
   );
 };
+
+export default WeatherWidget;
+
