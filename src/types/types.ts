@@ -20,4 +20,6 @@ export interface Settings {
   showMusic: boolean;
   backgroundColor: string;
   backgroundImage?: string;
+  theme?: string;
+  wallpaperUrl?: string;
 }
