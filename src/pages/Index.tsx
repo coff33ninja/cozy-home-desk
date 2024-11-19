@@ -21,10 +21,12 @@ const Index = () => {
       document.body.style.backgroundSize = 'cover';
       document.body.style.backgroundPosition = 'center';
     }
+    // Add a semi-transparent dark overlay to ensure text readability
+    document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
   }, []);
 
   return (
-    <div className="min-h-screen p-8 text-white">
+    <div className="min-h-screen p-8 text-gray-900 dark:text-white bg-white/80 dark:bg-black/80 backdrop-blur-sm">
       <div className="space-y-8 animate-fade-in">
         {/* Top row with weather, calendar and music */}
         <div className="grid grid-cols-3 gap-4 max-w-6xl mx-auto w-full">
