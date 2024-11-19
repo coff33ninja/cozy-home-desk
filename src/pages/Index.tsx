@@ -1,11 +1,40 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect } from 'react';
+import { SearchBar } from '@/components/SearchBar';
+import { WeatherWidget } from '@/components/WeatherWidget';
+import { MusicCard } from '@/components/MusicCard';
+import { FavoritesList } from '@/components/FavoritesList';
+import { SettingsPanel } from '@/components/SettingsPanel';
+import { getSettings } from '@/lib/localStorage';
 
 const Index = () => {
+  const settings = getSettings();
+
+  useEffect(() => {
+    // Apply settings to document
+    document.documentElement.style.setProperty('--border-radius', 
+      settings.roundedCorners ? '0.5rem' : '0');
+    document.body.style.backgroundColor = settings.backgroundColor;
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen p-8 text-white">
+      <div className="space-y-8 animate-fade-in">
+        {/* Top row with weather and music */}
+        <div className="flex justify-between items-start max-w-4xl mx-auto w-full">
+          {settings.showWeather && <WeatherWidget />}
+          {settings.showMusic && <MusicCard />}
+        </div>
+
+        {/* Search bar */}
+        <div className="py-8">
+          <SearchBar />
+        </div>
+
+        {/* Favorites */}
+        <FavoritesList />
+
+        {/* Settings */}
+        <SettingsPanel />
       </div>
     </div>
   );
