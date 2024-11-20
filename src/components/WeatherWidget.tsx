@@ -1,62 +1,65 @@
 import { useEffect, useState } from 'react';
-import { Cloud, Sun, CloudRain } from 'lucide-react';
+import { Cloud, Sun, CloudRain, MapPin } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
-
-type WeatherCondition = 'sunny' | 'cloudy' | 'rainy';
-
-interface WeatherData {
-  temp?: number;
-  condition?: WeatherCondition;
-}
+import { WeatherData, fetchWeather, fetchForecast, getCurrentLocation } from '@/lib/weatherService';
+import { WeatherForecast } from './WeatherForecast';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 // Fallback data if API is not configured
 const mockWeatherData: WeatherData = {
   temp: 22,
-  condition: 'sunny'
+  condition: 'sunny',
+  location: 'Sample City'
 };
 
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData>({});
+  const [forecast, setForecast] = useState<WeatherData['forecast']>([]);
+  const [coords, setCoords] = useState<{lat: number, lon: number}>();
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   
-  useEffect(() => {
-    const fetchWeather = async () => {
-      const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+  const fetchWeatherData = async (latitude: number, longitude: number) => {
+    setLoading(true);
+    try {
+      const [weatherData, forecastData] = await Promise.all([
+        fetchWeather(latitude, longitude),
+        fetchForecast(latitude, longitude)
+      ]);
       
-      if (!apiKey) {
-        setWeather(mockWeatherData);
-        toast({
-          title: "Using mock weather data",
-          description: "Configure VITE_WEATHER_API_KEY to get real weather data",
-        });
-        return;
-      }
+      setWeather(weatherData);
+      setForecast(forecastData);
+    } catch (error) {
+      console.error('Error fetching weather:', error);
+      setWeather(mockWeatherData);
+      toast({
+        title: "Failed to fetch weather",
+        description: "Using mock data as fallback",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    const detectLocation = async () => {
       try {
-        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=auto:ip`);
-        if (!response.ok) throw new Error('Weather API error');
-        
-        const data = await response.json();
-        setWeather({
-          temp: data.current.temp_c,
-          condition: data.current.condition.text.toLowerCase().includes('rain') ? 'rainy' 
-            : data.current.condition.text.toLowerCase().includes('cloud') ? 'cloudy' 
-            : 'sunny'
-        });
+        const position = await getCurrentLocation();
+        setCoords(position);
+        await fetchWeatherData(position.lat, position.lon);
       } catch (error) {
-        console.error('Error fetching weather:', error);
-        setWeather(mockWeatherData);
+        console.error('Location error:', error);
         toast({
-          title: "Failed to fetch weather",
-          description: "Using mock data as fallback",
+          title: "Location detection failed",
+          description: "Please enter your location manually",
           variant: "destructive",
         });
       }
     };
 
-    fetchWeather();
-    const interval = setInterval(fetchWeather, 300000); // Update every 5 minutes
-    return () => clearInterval(interval);
+    detectLocation();
   }, []);
 
   const getWeatherIcon = () => {
@@ -74,15 +77,32 @@ export const WeatherWidget = () => {
 
   return (
     <div className="p-4 rounded-lg bg-card text-card-foreground shadow-sm">
-      <h2 className="text-lg font-semibold mb-2">Weather</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold">Weather</h2>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => coords && fetchWeatherData(coords.lat, coords.lon)}
+          disabled={loading}
+        >
+          <MapPin className="w-4 h-4" />
+        </Button>
+      </div>
+
       {weather.temp && (
-        <div className="flex items-center gap-4">
-          {getWeatherIcon()}
-          <div>
-            <p className="text-2xl font-bold">{weather.temp}°C</p>
-            <p className="text-sm text-muted-foreground capitalize">{weather.condition}</p>
+        <>
+          <div className="flex items-center gap-4">
+            {getWeatherIcon()}
+            <div>
+              <p className="text-2xl font-bold">{weather.temp}°C</p>
+              <p className="text-sm text-muted-foreground capitalize">
+                {weather.condition} - {weather.location}
+              </p>
+            </div>
           </div>
-        </div>
+          
+          {forecast && <WeatherForecast forecast={forecast} />}
+        </>
       )}
     </div>
   );
