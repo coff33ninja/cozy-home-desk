@@ -75,3 +75,11 @@ A customizable dashboard with weather, media services integration, and IPTV supp
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Disclaimer
+
+This repository contains code developed with the assistance of various AI tools, including but not limited to idea generation, code drafting, and debugging. While AI has contributed significantly, the code has been reviewed, tested, and modified by coff33ninja.
+
+Please note that while every effort has been made to ensure functionality and reliability, the code is provided "as-is" under the terms of the LICENSE file. Use it at your own discretion, and feel free to report any issues or suggest improvements.
+
+For more information about AI contributions, see the [AI_CONTRIBUTION.md](./AI_CONTRIBUTION.md) file.
