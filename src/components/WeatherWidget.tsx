@@ -1,12 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Cloud, Sun, CloudRain } from 'lucide-react';
 
-export const WeatherWidget = () => {
-  const [weather, setWeather] = useState<{temp?: number, condition?: string}>({});
-
-import { useEffect, useState } from 'react';
-import { Cloud, Sun, CloudRain } from 'lucide-react';
-
 type WeatherCondition = 'sunny' | 'cloudy' | 'rainy';
 
 interface WeatherData {
@@ -16,7 +10,6 @@ interface WeatherData {
 
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData>({});
-} 
 
   useEffect(() => {
     const fetchWeather = async () => {
@@ -39,11 +32,12 @@ export const WeatherWidget = () => {
       case 'cloudy':   
         return <Cloud />;   
       case 'rainy':       
-      return <CloudRain />;   
+        return <CloudRain />;   
       default:
         return <Sun />;
-    };
+    }
   };
+
   return (
     <div>
       <h2>Weather</h2>
@@ -58,4 +52,3 @@ export const WeatherWidget = () => {
 };
 
 export default WeatherWidget;
-

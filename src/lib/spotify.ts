@@ -1,103 +1,67 @@
-import SpotifyWebApi from 'spotify-web-api-node';
-import { toast } from '@/components/ui/use-toast';
+import { Favorite, Folder, Settings, Category } from '@/types/types';
 
-const spotifyApi = new SpotifyWebApi({
-  clientId: import.meta.env.VITE_SPOTIFY_CLIENT_ID,
-  clientSecret: import.meta.env.VITE_SPOTIFY_CLIENT_SECRET,
-  redirectUri: import.meta.env.VITE_SPOTIFY_REDIRECT_URI
-});
+const FAVORITES_KEY = 'homepage_favorites';
+const FOLDERS_KEY = 'homepage_folders';
+const SETTINGS_KEY = 'homepage_settings';
 
-export interface SpotifyTrack {
-  name: string;
-  artist: string;
-  album: string;
-  albumArt?: string;
-}
+export const defaultSettings: Settings = {
+  roundedCorners: true,
+  showWeather: true,
+  showMusic: true,
+  backgroundColor: '#9b87f5',
+};
 
-async function refreshAccessToken() {
-  try {
-    const data = await spotifyApi.refreshAccessToken();
-    spotifyApi.setAccessToken(data.body['access_token']);
-    return true;
-  } catch (error) {
-    console.error('Error refreshing access token:', error);
-    return false;
-  }
-}
+export const saveToStorage = <T>(key: string, data: T) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
 
-export const initializeSpotify = async () => {
-  const token = localStorage.getItem('spotify_access_token');
-  const refreshToken = localStorage.getItem('spotify_refresh_token');
-  
-  if (token) {
-    spotifyApi.setAccessToken(token);
-  }
-  
-  if (refreshToken) {
-    spotifyApi.setRefreshToken(refreshToken);
-    await refreshAccessToken();
-  }
+export const loadFromStorage = <T>(key: string, defaultValue: T): T => {
+  const stored = localStorage.getItem(key);
+  return stored ? JSON.parse(stored) : defaultValue;
+};
+
+export const saveFavorite = (favorite: Favorite) => {
+  const favorites = loadFromStorage<Favorite[]>(FAVORITES_KEY, []);
+  favorites.push(favorite);
+  saveToStorage(FAVORITES_KEY, favorites);
+};
+
+export const getFavorites = () => {
+  return loadFromStorage<Favorite[]>(FAVORITES_KEY, []);
+};
+
+export const getFolders = () => {
+  return loadFromStorage<Folder[]>(FOLDERS_KEY, []);
+};
+
+export const getSettings = () => {
+  return loadFromStorage<Settings>(SETTINGS_KEY, defaultSettings);
+};
+
+export const updateSettings = (settings: Partial<Settings>) => {
+  const current = getSettings();
+  saveToStorage(SETTINGS_KEY, { ...current, ...settings });
 };
 
 export const handleSpotifyCallback = async (code: string) => {
   try {
-    const data = await spotifyApi.authorizationCodeGrant(code);
-    
-    const { access_token, refresh_token } = data.body;
-    
-    localStorage.setItem('spotify_access_token', access_token);
-    localStorage.setItem('spotify_refresh_token', refresh_token);
-    
-    spotifyApi.setAccessToken(access_token);
-    spotifyApi.setRefreshToken(refresh_token);
-    
-    toast({
-      title: "Successfully connected to Spotify",
-      description: "You can now see your currently playing track",
+    const response = await fetch('/api/spotify/callback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
     });
     
-    return true;
-  } catch (error) {
-    console.error('Error getting tokens:', error);
-    toast({
-      title: "Failed to connect to Spotify",
-      description: "Please try again",
-      variant: "destructive",
-    });
-    return false;
-  }
-};
-
-export const getCurrentTrack = async (): Promise<SpotifyTrack | null> => {
-  try {
-    // Try to get current track
-    const response = await spotifyApi.getMyCurrentPlayingTrack();
-    
-    // If no response or no item, return null
-    if (!response.body?.item) return null;
-    
-    const track = response.body.item;
-    return {
-      name: track.name,
-      artist: track.artists[0].name,
-      album: track.album.name,
-      albumArt: track.album.images[0]?.url
-    };
-  } catch (error: any) {
-    // If token expired, try to refresh it
-    if (error.statusCode === 401) {
-      const refreshed = await refreshAccessToken();
-      if (refreshed) {
-        // Retry getting current track
-        return getCurrentTrack();
-      }
+    if (!response.ok) {
+      throw new Error('Failed to authenticate with Spotify');
     }
-    console.error('Error fetching Spotify track:', error);
-    return null;
-  }
-};
 
-export const getSpotifyAuthUrl = () => {
-  const scopes = ['user-read-currently-playing', 'user-read-playback-state'];
-  return spotifyApi.createAuthorizeURL(scopes, 'spotify-auth-state');
+    const data = await response.json();
+    localStorage.setItem('spotify_access_token', data.accessToken);
+    localStorage.setItem('spotify_refresh_token', data.refreshToken);
+  } catch (error) {
+    console.error('Error handling Spotify callback:', error);
+    throw error;
+  }
 };

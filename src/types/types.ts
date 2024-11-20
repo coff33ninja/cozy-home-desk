@@ -1,5 +1,18 @@
 export type Category = 'work' | 'entertainment' | 'social' | 'productivity';
 
+export interface Favorite {
+  id: string;
+  title: string;
+  url: string;
+  category: Category;
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  favorites: Favorite[];
+}
+
 export interface Settings {
   roundedCorners: boolean;
   showWeather: boolean;
@@ -44,7 +57,6 @@ const settingsReducer = (state = initialState, action: SettingsAction): Settings
   switch (action.type) {  
     case 'UPDATE_SETTINGS':
       return {...state, settings: {...state.settings,...action.payload } };
-
     default:
       return state;
   }
