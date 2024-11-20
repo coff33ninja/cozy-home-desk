@@ -3,8 +3,8 @@ import { Favorite, Folder, Settings } from '@/types/types';
 const FAVORITES_KEY = 'homepage_favorites';
 const FOLDERS_KEY = 'homepage_folders';
 const SETTINGS_KEY = 'homepage_settings';
-const SPOTIFY_CLIENT_ID = process.env.VITE_SPOTIFY_CLIENT_ID;
-const SPOTIFY_REDIRECT_URI = process.env.VITE_SPOTIFY_REDIRECT_URI;
+const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+const SPOTIFY_REDIRECT_URI = import.meta.env.VITE_SPOTIFY_REDIRECT_URI;
 
 export interface SpotifyTrack {
   name: string;
