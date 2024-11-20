@@ -19,6 +19,24 @@ export const MusicCard = () => {
     }
   }, []);
 
+  const handleSpotifyCallback = async (code: string) => {
+    try {
+      const response = await fetch('/api/spotify/callback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to authenticate with Spotify');
+      }
+    } catch (error) {
+      console.error('Error handling Spotify callback:', error);
+    }
+  };
+
   const { data: track, isLoading } = useQuery<SpotifyTrack | null>({
     queryKey: ['currentTrack'],
     queryFn: getCurrentTrack,
