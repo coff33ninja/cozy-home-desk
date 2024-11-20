@@ -21,8 +21,17 @@ export const MusicCard = () => {
   const [channels, setChannels] = useState<Channel[]>([]);
   const { toast } = useToast();
 
+  const isValidYouTubeUrl = (url: string): boolean => {
+    try {
+      const parsedUrl = new URL(url);
+      return ['www.youtube.com', 'youtube.com', 'youtu.be'].includes(parsedUrl.host);
+    } catch {
+      return false;
+    }
+  };
+
   const handleYoutubePlay = (url: string) => {
-    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+    if (!isValidYouTubeUrl(url)) {
       toast({
         title: "Invalid URL",
         description: "Please enter a valid YouTube Music URL",
@@ -30,8 +39,19 @@ export const MusicCard = () => {
       });
       return;
     }
-    const videoId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1];
-    setCurrentMedia(`https://www.youtube.com/embed/${videoId}?autoplay=1`);
+
+    const parsedUrl = new URL(url);
+    const videoId =
+      parsedUrl.searchParams.get('v') || parsedUrl.pathname.split('/').pop();
+    if (videoId) {
+      setCurrentMedia(`https://www.youtube.com/embed/${videoId}?autoplay=1`);
+    } else {
+      toast({
+        title: "Invalid YouTube URL",
+        description: "Unable to extract a video ID from the provided URL",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleIPTVLoad = async (url: string) => {
@@ -124,7 +144,7 @@ export const MusicCard = () => {
 
           {currentMedia && (
             <div className="mt-4">
-              {currentMedia.includes('youtube.com') ? (
+              {isValidYouTubeUrl(currentMedia) ? (
                 <iframe
                   src={currentMedia}
                   className="w-full h-64"
