@@ -1,4 +1,5 @@
 const WEATHER_API_BASE = 'https://api.openweathermap.org/data/2.5';
+const API_KEY = 'fd8fa3f0f6576bac3eb011eb9decba65';
 
 export interface WeatherData {
   temp: number;
@@ -20,11 +21,8 @@ export const getWeatherCondition = (apiCondition: string): WeatherData['conditio
 };
 
 export const fetchWeather = async (lat: number, lon: number): Promise<WeatherData> => {
-  const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-  if (!apiKey) throw new Error('Weather API key not configured');
-
   const response = await fetch(
-    `${WEATHER_API_BASE}/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+    `${WEATHER_API_BASE}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
   );
   
   if (!response.ok) throw new Error('Weather API error');
@@ -39,11 +37,8 @@ export const fetchWeather = async (lat: number, lon: number): Promise<WeatherDat
 };
 
 export const fetchForecast = async (lat: number, lon: number): Promise<ForecastDay[]> => {
-  const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
-  if (!apiKey) throw new Error('Weather API key not configured');
-
   const response = await fetch(
-    `${WEATHER_API_BASE}/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+    `${WEATHER_API_BASE}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
   );
   
   if (!response.ok) throw new Error('Weather API error');

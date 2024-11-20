@@ -14,7 +14,7 @@ const mockWeatherData: WeatherData = {
 };
 
 export const WeatherWidget = () => {
-  const [weather, setWeather] = useState<WeatherData>({});
+  const [weather, setWeather] = useState<WeatherData>(mockWeatherData);
   const [forecast, setForecast] = useState<WeatherData['forecast']>([]);
   const [coords, setCoords] = useState<{lat: number, lon: number}>();
   const [loading, setLoading] = useState(false);
