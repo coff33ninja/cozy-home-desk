@@ -1,5 +1,5 @@
 const WEATHER_API_BASE = 'https://api.openweathermap.org/data/2.5';
-const API_KEY = 'fd8fa3f0f6576bac3eb011eb9decba65';
+const API_KEY = '1b18ce13c84e21faafb19c931bb29331';
 
 export interface WeatherData {
   temp: number;
@@ -25,7 +25,10 @@ export const fetchWeather = async (lat: number, lon: number): Promise<WeatherDat
     `${WEATHER_API_BASE}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
   );
   
-  if (!response.ok) throw new Error('Weather API error');
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`Weather API error: ${errorData.message}`);
+  }
   
   const data = await response.json();
   
@@ -41,7 +44,10 @@ export const fetchForecast = async (lat: number, lon: number): Promise<ForecastD
     `${WEATHER_API_BASE}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
   );
   
-  if (!response.ok) throw new Error('Weather API error');
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`Weather API error: ${errorData.message}`);
+  }
   
   const data = await response.json();
   
