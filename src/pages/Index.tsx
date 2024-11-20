@@ -21,9 +21,14 @@ const Index = () => {
       document.body.style.backgroundSize = 'cover';
       document.body.style.backgroundPosition = 'center';
     }
-    // Add a semi-transparent dark overlay to ensure text readability
-    document.body.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-  }, []);
+    
+    // Apply night mode
+    if (settings.nightMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings]);
 
   return (
     <div className="min-h-screen p-8 text-gray-900 dark:text-white bg-white/80 dark:bg-black/80 backdrop-blur-sm">

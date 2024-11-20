@@ -52,6 +52,14 @@ export const SettingsPanel = () => {
         document.body.style.backgroundImage = '';
       }
     }
+
+    if (key === 'nightMode') {
+      if (value) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
   };
 
   return (
@@ -66,7 +74,7 @@ export const SettingsPanel = () => {
       </Button>
 
       {isOpen && (
-        <div className="absolute bottom-16 right-0 w-96 p-4 bg-white/10 backdrop-blur-sm rounded-lg animate-fade-in">
+        <div className="absolute bottom-16 right-0 w-96 p-4 bg-white/10 backdrop-blur-sm rounded-lg animate-fade-in dark:bg-black/30">
           <h3 className="text-lg font-semibold mb-4">Settings</h3>
           
           <Tabs defaultValue="ui" className="w-full">
@@ -76,6 +84,14 @@ export const SettingsPanel = () => {
             </TabsList>
 
             <TabsContent value="ui" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <span>Night Mode</span>
+                <Switch
+                  checked={settings.nightMode}
+                  onCheckedChange={(checked) => handleSettingChange('nightMode', checked)}
+                />
+              </div>
+
               <div className="space-y-4">
                 <Label>Theme</Label>
                 <RadioGroup
@@ -99,7 +115,7 @@ export const SettingsPanel = () => {
                   placeholder="Enter wallpaper URL"
                   value={settings.wallpaperUrl || ''}
                   onChange={(e) => handleSettingChange('wallpaperUrl', e.target.value)}
-                  className="w-full px-3 py-2 rounded bg-white/20"
+                  className="w-full px-3 py-2 rounded bg-white/20 dark:bg-black/20"
                 />
               </div>
 
@@ -144,7 +160,7 @@ export const SettingsPanel = () => {
                           url: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 rounded bg-white/20 mb-2"
+                      className="w-full px-3 py-2 rounded bg-white/20 dark:bg-black/20 mb-2"
                     />
                     <input
                       type="text"
@@ -156,7 +172,7 @@ export const SettingsPanel = () => {
                           apiKey: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 rounded bg-white/20"
+                      className="w-full px-3 py-2 rounded bg-white/20 dark:bg-black/20"
                     />
                   </div>
                 ))}
@@ -169,7 +185,7 @@ export const SettingsPanel = () => {
                   placeholder="Weather API Key"
                   value={settings.weatherApiKey || ''}
                   onChange={(e) => handleSettingChange('weatherApiKey', e.target.value)}
-                  className="w-full px-3 py-2 rounded bg-white/20"
+                  className="w-full px-3 py-2 rounded bg-white/20 dark:bg-black/20"
                 />
               </div>
 
@@ -180,7 +196,7 @@ export const SettingsPanel = () => {
                   placeholder="M3U Playlist URL"
                   value={settings.iptvPlaylistUrl || ''}
                   onChange={(e) => handleSettingChange('iptvPlaylistUrl', e.target.value)}
-                  className="w-full px-3 py-2 rounded bg-white/20"
+                  className="w-full px-3 py-2 rounded bg-white/20 dark:bg-black/20"
                 />
               </div>
             </TabsContent>

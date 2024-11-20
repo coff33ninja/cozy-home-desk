@@ -13,6 +13,13 @@ export interface Folder {
   favorites: Favorite[];
 }
 
+export interface ServiceCredentials {
+  url: string;
+  username?: string;
+  password?: string;
+  apiKey?: string;
+}
+
 export interface Settings {
   roundedCorners: boolean;
   showWeather: boolean;
@@ -25,12 +32,9 @@ export interface Settings {
   backgroundImage?: string;
   theme?: string;
   wallpaperUrl?: string;
-}
-
-export interface ServiceCredentials {
-  url: string;
-  username: string;
-  password: string;
+  weatherApiKey?: string;
+  iptvPlaylistUrl?: string;
+  nightMode?: boolean;
 }
 
 export interface SettingsState {
@@ -50,6 +54,7 @@ const initialState: SettingsState = {
     showWeather: true,
     showMusic: true,
     backgroundColor: '#000000',
+    nightMode: false,
   },
 };
 
