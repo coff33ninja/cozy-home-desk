@@ -7,6 +7,10 @@ A customizable dashboard with weather, media services integration, and IPTV supp
 - Weather widget with API integration and fallback mock data
 - Media services integration (Radarr, Sonarr, Lidarr, qBittorrent)
 - YouTube Music and IPTV playlist support
+  - YouTube Music iframe player integration
+  - M3U playlist parser for IPTV channels
+  - Online radio station streaming
+  - Channel guide interface
 - Customizable UI with themes and layout options
 - Settings management with local storage persistence
 
@@ -22,23 +26,40 @@ A customizable dashboard with weather, media services integration, and IPTV supp
    VITE_LIDARR_API_KEY=your_lidarr_api_key
    ```
 
+## Media Features
+
+### YouTube Music
+- Supports YouTube Music URLs
+- Embedded player with autoplay
+- Video playback in iframe
+
+### IPTV Support
+- M3U playlist parsing
+- Channel guide interface
+- Channel logos (when available in playlist)
+- Direct stream playback
+
+### Online Radio
+- Support for direct stream URLs
+- Built-in audio player
+- Stream controls
+
 ## Next Steps
 
 1. Weather Integration:
-   - Implement weather API service with OpenWeatherMap or similar
-   - Add location detection or manual location input
-   - Create weather forecast view
+   - Add more detailed weather information
+   - Improve location detection accuracy
+   - Add weather alerts
 
 2. Media Services:
-   - Complete Radarr/Sonarr/Lidarr API integration
-   - Add download status monitoring
-   - Implement search functionality
+   - Add more streaming services support
+   - Implement playlist management
+   - Add favorite channels feature
 
-3. Music and IPTV:
-   - Integrate YouTube Music iframe player
-   - Add M3U playlist parser for IPTV
-   - Create channel guide interface
-   - Add online radio station support
+3. Performance:
+   - Implement caching for API responses
+   - Add loading states and error boundaries
+   - Optimize component rendering
 
 4. UI Improvements:
    - Add more theme options
@@ -46,12 +67,7 @@ A customizable dashboard with weather, media services integration, and IPTV supp
    - Add widget size customization
    - Create mobile-responsive layouts
 
-5. Performance:
-   - Implement caching for API responses
-   - Add loading states and error boundaries
-   - Optimize component rendering
-
-6. Settings:
+5. Settings:
    - Add import/export functionality
    - Implement backup/restore features
    - Add more customization options
