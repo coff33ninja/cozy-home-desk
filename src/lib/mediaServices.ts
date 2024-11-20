@@ -1,144 +1,83 @@
 import { toast } from '@/components/ui/use-toast';
 
-// Shared Configuration Interfaces
-interface ArrConfig {
-  url: string;
-  apiKey?: string;
-  username?: string;
-  password?: string;
-}
-
-interface QBittorrentConfig {
-  url: string;
-  username: string;
-  password: string;
-}
-
-// Fetch Configuration Functions
-export const getRadarrConfig = (): ArrConfig => ({
-  url: import.meta.env.VITE_RADARR_URL || '',
-  apiKey: import.meta.env.VITE_RADARR_API_KEY || '',
-  username: import.meta.env.VITE_RADARR_USERNAME || '',
-  password: import.meta.env.VITE_RADARR_PASSWORD || '',
-});
-
-export const getSonarrConfig = (): ArrConfig => ({
-  url: import.meta.env.VITE_SONARR_URL || '',
-  apiKey: import.meta.env.VITE_SONARR_API_KEY || '',
-  username: import.meta.env.VITE_SONARR_USERNAME || '',
-  password: import.meta.env.VITE_SONARR_PASSWORD || '',
-});
-
-export const getLidarrConfig = (): ArrConfig => ({
-  url: import.meta.env.VITE_LIDARR_URL || '',
-  apiKey: import.meta.env.VITE_LIDARR_API_KEY || '',
-  username: import.meta.env.VITE_LIDARR_USERNAME || '',
-  password: import.meta.env.VITE_LIDARR_PASSWORD || '',
-});
-
-export const getQBittorrentConfig = (): QBittorrentConfig => ({
-  url: import.meta.env.VITE_QBITTORRENT_URL || '',
-  username: import.meta.env.VITE_QBITTORRENT_USERNAME || '',
-  password: import.meta.env.VITE_QBITTORRENT_PASSWORD || '',
-});
-
-// Utility Function: Create Authorization Headers
-const createAuthHeaders = (config: ArrConfig | QBittorrentConfig) => {
-  if ('username' in config && 'password' in config && config.username && config.password) {
-    return {
-      'Authorization': 'Basic ' + btoa(`${config.username}:${config.password}`),
-      'Content-Type': 'application/json',
-    };
-  }
-  return { 'Content-Type': 'application/json' };
+// Mock data for when APIs are not configured
+const mockMediaData = {
+  radarr: [
+    { id: 1, title: 'Example Movie', status: 'downloading' }
+  ],
+  sonarr: [
+    { id: 1, series: { title: 'Example Show' }, episode: { title: 'Pilot' } }
+  ],
+  lidarr: [
+    { id: 1, artist: { artistName: 'Example Artist' }, album: { title: 'Example Album' } }
+  ],
+  qbittorrent: [
+    { hash: '123', name: 'Example.Torrent', progress: 0.5 }
+  ]
 };
 
-// Fetch Functions for Arr Projects
-const fetchArrQueue = async (config: ArrConfig, serviceName: string) => {
+const checkApiConfig = (service: string) => {
+  const url = import.meta.env[`VITE_${service.toUpperCase()}_URL`];
+  const apiKey = import.meta.env[`VITE_${service.toUpperCase()}_API_KEY`];
+  
+  if (!url || !apiKey) {
+    toast({
+      title: `${service} not configured`,
+      description: `Using mock data. Configure VITE_${service.toUpperCase()}_URL and API_KEY for real data.`,
+    });
+    return false;
+  }
+  return true;
+};
+
+export const fetchRadarrQueue = async () => {
+  if (!checkApiConfig('radarr')) return mockMediaData.radarr;
+  
   try {
-    if (!config.url) {
-      toast({
-        title: `${serviceName} Error`,
-        description: `${serviceName} URL is not configured`,
-        variant: "destructive",
-      });
-      return [];
-    }
-
-    const url = `${config.url}/api/v3/queue`;
-    const headers = config.apiKey
-      ? { 'X-Api-Key': config.apiKey }
-      : createAuthHeaders(config);
-
-    const response = await fetch(url, { headers });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`${response.status} ${errorText}`);
-    }
-    
+    const response = await fetch(`${import.meta.env.VITE_RADARR_URL}/api/v3/queue?apikey=${import.meta.env.VITE_RADARR_API_KEY}`);
+    if (!response.ok) throw new Error('Radarr API error');
     return await response.json();
   } catch (error) {
-    console.error(`Error fetching ${serviceName} queue:`, error);
-    toast({
-      title: `${serviceName} Error`,
-      description: `Failed to fetch ${serviceName} queue`,
-      variant: "destructive",
-    });
-    return [];
+    console.error('Radarr fetch error:', error);
+    return mockMediaData.radarr;
   }
 };
 
-export const fetchRadarrQueue = async () => fetchArrQueue(getRadarrConfig(), 'Radarr');
-export const fetchSonarrQueue = async () => fetchArrQueue(getSonarrConfig(), 'Sonarr');
-export const fetchLidarrQueue = async () => fetchArrQueue(getLidarrConfig(), 'Lidarr');
-
-// Fetch Function for qBittorrent
-export const fetchQBittorrentData = async () => {
-  const config = getQBittorrentConfig();
+export const fetchSonarrQueue = async () => {
+  if (!checkApiConfig('sonarr')) return mockMediaData.sonarr;
 
   try {
-    if (!config.url || !config.username || !config.password) {
-      toast({
-        title: "qBittorrent Error",
-        description: "qBittorrent credentials not configured",
-        variant: "destructive",
-      });
-      return [];
-    }
-
-    const authResponse = await fetch(`${config.url}/api/v2/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        username: config.username,
-        password: config.password,
-      }),
-    });
-
-    if (!authResponse.ok) {
-      throw new Error('Failed to authenticate with qBittorrent');
-    }
-
-    const cookie = authResponse.headers.get('set-cookie');
-    if (!cookie) throw new Error('No session cookie received');
-
-    const torrentsResponse = await fetch(`${config.url}/api/v2/torrents/info`, {
-      headers: { Cookie: cookie },
-    });
-
-    if (!torrentsResponse.ok) {
-      throw new Error('Failed to fetch qBittorrent torrents');
-    }
-    
-    return await torrentsResponse.json();
+    const response = await fetch(`${import.meta.env.VITE_SONARR_URL}/api/v3/queue?apikey=${import.meta.env.VITE_SONARR_API_KEY}`);
+    if (!response.ok) throw new Error('Sonarr API error');
+    return await response.json();
   } catch (error) {
-    console.error('Error fetching qBittorrent data:', error);
-    toast({
-      title: "qBittorrent Error",
-      description: "Failed to fetch torrent data",
-      variant: "destructive",
-    });
-    return [];
+    console.error('Sonarr fetch error:', error);
+    return mockMediaData.sonarr;
+  }
+};
+
+export const fetchLidarrQueue = async () => {
+  if (!checkApiConfig('lidarr')) return mockMediaData.lidarr;
+
+  try {
+    const response = await fetch(`${import.meta.env.VITE_LIDARR_URL}/api/v3/queue?apikey=${import.meta.env.VITE_LIDARR_API_KEY}`);
+    if (!response.ok) throw new Error('Lidarr API error');
+    return await response.json();
+  } catch (error) {
+    console.error('Lidarr fetch error:', error);
+    return mockMediaData.lidarr;
+  }
+};
+
+export const fetchQBittorrentData = async () => {
+  if (!checkApiConfig('qbittorrent')) return mockMediaData.qbittorrent;
+  
+  try {
+    const response = await fetch(`${import.meta.env.VITE_QBITTORRENT_URL}/api/v2/torrents/info`);
+    if (!response.ok) throw new Error('qBittorrent API error');
+    return await response.json();
+  } catch (error) {
+    console.error('qBittorrent fetch error:', error);
+    return mockMediaData.qbittorrent;
   }
 };

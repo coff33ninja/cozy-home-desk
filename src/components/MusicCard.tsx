@@ -1,97 +1,77 @@
-import { useEffect } from 'react';
-import { Music } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { getCurrentTrack, initializeSpotify, getSpotifyAuthUrl, type SpotifyTrack } from '@/lib/spotify';
+import { useState } from 'react';
+import { Music, Radio, Tv } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export const MusicCard = () => {
-  useEffect(() => {
-    initializeSpotify();
-    
-    // Handle Spotify callback
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    if (code) {
-      handleSpotifyCallback(code);
-      // Remove code from URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, []);
+  const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [iptvUrl, setIptvUrl] = useState('');
+  const [radioUrl, setRadioUrl] = useState('');
+  const [currentMedia, setCurrentMedia] = useState<string | null>(null);
 
-  const handleSpotifyCallback = async (code: string) => {
-    try {
-      const response = await fetch('/api/spotify/callback', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code }),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to authenticate with Spotify');
-      }
-    } catch (error) {
-      console.error('Error handling Spotify callback:', error);
-    }
+  const handlePlay = (url: string) => {
+    setCurrentMedia(url);
   };
-
-  const { data: track, isLoading } = useQuery<SpotifyTrack | null>({
-    queryKey: ['currentTrack'],
-    queryFn: getCurrentTrack,
-    refetchInterval: 5000, // Refresh every 5 seconds
-  });
-
-  const handleConnect = () => {
-    window.location.href = getSpotifyAuthUrl();
-  };
-
-  if (isLoading) {
-    return (
-      <Card className="p-4 animate-pulse">
-        <CardContent className="flex items-center gap-3">
-          <Music className="text-primary" />
-          <div className="flex flex-col">
-            <div className="h-4 w-24 bg-primary/20 rounded" />
-            <div className="h-3 w-32 bg-primary/20 rounded mt-2" />
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!track) {
-    return (
-      <Card className="p-4">
-        <CardContent className="flex flex-col gap-3">
-          <div className="flex items-center gap-3">
-            <Music className="text-primary" />
-            <div className="flex flex-col">
-              <span className="font-medium">Not Playing</span>
-              <span className="text-sm text-muted-foreground">No active playback</span>
-            </div>
-          </div>
-          <Button onClick={handleConnect} variant="outline" size="sm">
-            Connect Spotify
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
 
   return (
     <Card className="p-4">
-      <CardContent className="flex items-center gap-3">
-        {track.albumArt ? (
-          <img src={track.albumArt} alt="Album Art" className="w-12 h-12 rounded" />
-        ) : (
-          <Music className="text-primary" />
-        )}
-        <div className="flex flex-col">
-          <span className="font-medium">{track.name}</span>
-          <span className="text-sm text-muted-foreground">{track.artist}</span>
-        </div>
+      <CardContent>
+        <Tabs defaultValue="youtube" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="youtube">
+              <Music className="w-4 h-4 mr-2" />
+              YouTube
+            </TabsTrigger>
+            <TabsTrigger value="iptv">
+              <Tv className="w-4 h-4 mr-2" />
+              IPTV
+            </TabsTrigger>
+            <TabsTrigger value="radio">
+              <Radio className="w-4 h-4 mr-2" />
+              Radio
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="youtube" className="space-y-4">
+            <Input
+              placeholder="YouTube Music URL"
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+            />
+            <Button onClick={() => handlePlay(youtubeUrl)}>Play</Button>
+          </TabsContent>
+
+          <TabsContent value="iptv" className="space-y-4">
+            <Input
+              placeholder="IPTV Playlist URL"
+              value={iptvUrl}
+              onChange={(e) => setIptvUrl(e.target.value)}
+            />
+            <Button onClick={() => handlePlay(iptvUrl)}>Load Playlist</Button>
+          </TabsContent>
+
+          <TabsContent value="radio" className="space-y-4">
+            <Input
+              placeholder="Radio Stream URL"
+              value={radioUrl}
+              onChange={(e) => setRadioUrl(e.target.value)}
+            />
+            <Button onClick={() => handlePlay(radioUrl)}>Play</Button>
+          </TabsContent>
+
+          {currentMedia && (
+            <div className="mt-4">
+              <iframe
+                src={currentMedia}
+                className="w-full h-64"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )}
+        </Tabs>
       </CardContent>
     </Card>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Cloud, Sun, CloudRain } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
 
 type WeatherCondition = 'sunny' | 'cloudy' | 'rainy';
 
@@ -8,7 +9,7 @@ interface WeatherData {
   condition?: WeatherCondition;
 }
 
-// Mock data to avoid API errors
+// Fallback data if API is not configured
 const mockWeatherData: WeatherData = {
   temp: 22,
   condition: 'sunny'
@@ -16,42 +17,71 @@ const mockWeatherData: WeatherData = {
 
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState<WeatherData>({});
-
+  const { toast } = useToast();
+  
   useEffect(() => {
-    // Simulate API call with mock data
     const fetchWeather = async () => {
-      try {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+      const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+      
+      if (!apiKey) {
         setWeather(mockWeatherData);
+        toast({
+          title: "Using mock weather data",
+          description: "Configure VITE_WEATHER_API_KEY to get real weather data",
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=auto:ip`);
+        if (!response.ok) throw new Error('Weather API error');
+        
+        const data = await response.json();
+        setWeather({
+          temp: data.current.temp_c,
+          condition: data.current.condition.text.toLowerCase().includes('rain') ? 'rainy' 
+            : data.current.condition.text.toLowerCase().includes('cloud') ? 'cloudy' 
+            : 'sunny'
+        });
       } catch (error) {
-        console.error('Error fetching weather data:', error);
+        console.error('Error fetching weather:', error);
+        setWeather(mockWeatherData);
+        toast({
+          title: "Failed to fetch weather",
+          description: "Using mock data as fallback",
+          variant: "destructive",
+        });
       }
     };
 
     fetchWeather();
+    const interval = setInterval(fetchWeather, 300000); // Update every 5 minutes
+    return () => clearInterval(interval);
   }, []);
 
   const getWeatherIcon = () => {
     switch (weather.condition) {
       case 'sunny':
-        return <Sun />;
+        return <Sun className="w-8 h-8" />;
       case 'cloudy':   
-        return <Cloud />;   
+        return <Cloud className="w-8 h-8" />;   
       case 'rainy':       
-        return <CloudRain />;   
+        return <CloudRain className="w-8 h-8" />;   
       default:
-        return <Sun />;
+        return <Sun className="w-8 h-8" />;
     }
   };
 
   return (
-    <div>
-      <h2>Weather</h2>
+    <div className="p-4 rounded-lg bg-card text-card-foreground shadow-sm">
+      <h2 className="text-lg font-semibold mb-2">Weather</h2>
       {weather.temp && (
-        <div>
-          <p>Temperature: {weather.temp}°C</p>
-          <p>{getWeatherIcon()}</p>
+        <div className="flex items-center gap-4">
+          {getWeatherIcon()}
+          <div>
+            <p className="text-2xl font-bold">{weather.temp}°C</p>
+            <p className="text-sm text-muted-foreground capitalize">{weather.condition}</p>
+          </div>
         </div>
       )}
     </div>
