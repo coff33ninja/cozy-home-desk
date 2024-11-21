@@ -5,11 +5,21 @@ import { getFavorites, saveFavorite } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
+import { ColorPicker } from './settings/ColorPicker';
+import { getSettings, updateSettings } from '@/lib/localStorage';
 
 export const FavoritesList = () => {
   const [favorites, setFavorites] = useState<Favorite[]>(getFavorites());
   const [showAddForm, setShowAddForm] = useState(false);
   const [newFavorite, setNewFavorite] = useState({ title: '', url: '', category: 'work' as Category });
+  const settings = getSettings();
+  const [bgColor, setBgColor] = useState(settings.favoritesCardBg || 'rgba(255, 255, 255, 0.1)');
+
+  const handleColorChange = (color: string) => {
+    setBgColor(color);
+    const newSettings = { ...settings, favoritesCardBg: color };
+    updateSettings(newSettings);
+  };
 
   const handleAdd = () => {
     if (!newFavorite.title || !newFavorite.url) {
@@ -30,7 +40,10 @@ export const FavoritesList = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4">
+    <div className="w-full max-w-4xl mx-auto space-y-4 relative p-4 rounded-lg" style={{ backgroundColor: bgColor }}>
+      <div className="absolute top-2 right-2">
+        <ColorPicker color={bgColor} onChange={handleColorChange} />
+      </div>
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Favorites</h2>
         <Button onClick={() => setShowAddForm(!showAddForm)} variant="ghost">

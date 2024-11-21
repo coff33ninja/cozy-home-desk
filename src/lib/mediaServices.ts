@@ -1,4 +1,5 @@
 import { toast } from '@/components/ui/use-toast';
+import { getSettings } from './localStorage';
 
 // Mock data for when APIs are not configured
 const mockMediaData = {
@@ -70,10 +71,35 @@ export const fetchLidarrQueue = async () => {
 };
 
 export const fetchQBittorrentData = async () => {
-  if (!checkApiConfig('qbittorrent')) return mockMediaData.qbittorrent;
-  
+  const settings = getSettings();
+  const credentials = settings.qbittorrentCredentials;
+
+  if (!credentials?.url || !credentials?.username || !credentials?.password) {
+    toast({
+      title: 'qBittorrent not configured',
+      description: 'Using mock data. Configure URL, username and password for real data.',
+    });
+    return mockMediaData.qbittorrent;
+  }
+
   try {
-    const response = await fetch(`${import.meta.env.VITE_QBITTORRENT_URL}/api/v2/torrents/info`);
+    // First login to get SID cookie
+    const loginResponse = await fetch(`${credentials.url}/api/v2/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `username=${encodeURIComponent(credentials.username)}&password=${encodeURIComponent(credentials.password)}`,
+      credentials: 'include',
+    });
+
+    if (!loginResponse.ok) throw new Error('qBittorrent login failed');
+
+    // Then fetch torrents
+    const response = await fetch(`${credentials.url}/api/v2/torrents/info`, {
+      credentials: 'include',
+    });
+    
     if (!response.ok) throw new Error('qBittorrent API error');
     return await response.json();
   } catch (error) {

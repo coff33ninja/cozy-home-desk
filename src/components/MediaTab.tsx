@@ -1,6 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ColorPicker } from './settings/ColorPicker';
+import { getSettings, updateSettings } from '@/lib/localStorage';
+import { useState } from 'react';
 import { 
   fetchRadarrQueue, 
   fetchSonarrQueue, 
@@ -9,6 +12,15 @@ import {
 } from '@/lib/mediaServices';
 
 export const MediaTab = () => {
+  const settings = getSettings();
+  const [bgColor, setBgColor] = useState(settings.mediaCardBg || 'rgba(255, 255, 255, 0.1)');
+
+  const handleColorChange = (color: string) => {
+    setBgColor(color);
+    const newSettings = { ...settings, mediaCardBg: color };
+    updateSettings(newSettings);
+  };
+
   const { data: radarrData } = useQuery({
     queryKey: ['radarrQueue'],
     queryFn: fetchRadarrQueue,
@@ -40,7 +52,10 @@ export const MediaTab = () => {
         <TabsTrigger value="torrent">qBittorrent</TabsTrigger>
       </TabsList>
       <TabsContent value="arr" className="mt-4">
-        <Card>
+        <Card style={{ backgroundColor: bgColor }} className="relative">
+          <div className="absolute top-2 right-2">
+            <ColorPicker color={bgColor} onChange={handleColorChange} />
+          </div>
           <CardHeader>
             <CardTitle>*Arr Services</CardTitle>
           </CardHeader>
@@ -95,7 +110,10 @@ export const MediaTab = () => {
         </Card>
       </TabsContent>
       <TabsContent value="torrent" className="mt-4">
-        <Card>
+        <Card style={{ backgroundColor: bgColor }} className="relative">
+          <div className="absolute top-2 right-2">
+            <ColorPicker color={bgColor} onChange={handleColorChange} />
+          </div>
           <CardHeader>
             <CardTitle>qBittorrent</CardTitle>
           </CardHeader>
