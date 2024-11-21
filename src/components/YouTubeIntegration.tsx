@@ -5,6 +5,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
 import { ColorPicker } from './settings/ColorPicker';
 import { getSettings, updateSettings } from '@/lib/localStorage';
+import { serviceIcons } from '@/lib/icons';
+import DOMPurify from 'dompurify';
 
 declare global {
   interface Window {
@@ -39,6 +41,8 @@ export const YouTubeIntegration = () => {
   const { toast } = useToast();
   const settings = getSettings();
   const [bgColor, setBgColor] = useState(settings.youtubeCardBg || 'rgba(255, 255, 255, 0.1)');
+
+  const YoutubeIcon = serviceIcons.youtube;
 
   const handleColorChange = (color: string) => {
     setBgColor(color);
@@ -140,20 +144,37 @@ export const YouTubeIntegration = () => {
     }
   };
 
+  const handlePlaylistClick = (playlistId: string) => {
+    const mediaUrl = DOMPurify.sanitize(`https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1`);
+    
+    // Dispatch event for MediaTab
+    const event = new CustomEvent('mediaUpdate', {
+      detail: {
+        media: mediaUrl,
+        playlist: playlists
+      }
+    });
+    window.dispatchEvent(event);
+  };
+
   return (
     <Card className="relative" style={{ backgroundColor: bgColor }}>
       <div className="absolute top-2 right-2">
         <ColorPicker color={bgColor} onChange={handleColorChange} />
       </div>
       <CardHeader>
-        <CardTitle>YouTube Integration</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <YoutubeIcon className="w-6 h-6" />
+          YouTube Playlists
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Button 
           onClick={handleAuthClick}
           variant={isSignedIn ? "destructive" : "default"}
-          className="mb-4"
+          className="mb-4 flex items-center gap-2"
         >
+          <YoutubeIcon className="w-4 h-4" />
           {isSignedIn ? 'Sign Out' : 'Sign In with YouTube'}
         </Button>
 
@@ -161,16 +182,14 @@ export const YouTubeIntegration = () => {
           <ScrollArea className="h-[300px]">
             <div className="space-y-2">
               {playlists.map((playlist) => (
-                <a
+                <div
                   key={playlist.id}
-                  href={`https://www.youtube.com/playlist?list=${playlist.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block p-2 hover:bg-accent rounded-md transition-colors"
+                  onClick={() => handlePlaylistClick(playlist.id)}
+                  className="block p-2 hover:bg-accent rounded-md transition-colors cursor-pointer"
                 >
                   <div className="font-medium">{playlist.snippet.title}</div>
                   <div className="text-sm text-muted-foreground">{playlist.snippet.description}</div>
-                </a>
+                </div>
               ))}
             </div>
           </ScrollArea>

@@ -1,19 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ColorPicker } from './settings/ColorPicker';
 import { getSettings, updateSettings } from '@/lib/localStorage';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   fetchRadarrQueue, 
   fetchSonarrQueue, 
   fetchLidarrQueue,
   fetchQBittorrentData 
 } from '@/lib/mediaServices';
+import { serviceIcons } from '@/lib/icons';
+import { MediaPlayer } from './media/MediaPlayer';
+import { MediaQueue } from './media/MediaQueue';
+import { QueueList } from './media/QueueList';
+import { Card } from './ui/card';
+import { AspectRatio } from './ui/aspect-ratio';
 
 export const MediaTab = () => {
   const settings = getSettings();
-  const [bgColor, setBgColor] = useState(settings.mediaCardBg || 'rgba(255, 255, 255, 0.1)');
+  const [bgColor, setBgColor] = useState(settings.mediaCardBg || '#1a1a1a');
+  const [currentMedia, setCurrentMedia] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('arr');
+  const [currentPlaylist, setCurrentPlaylist] = useState<any[]>([]);
+  const [playlistType, setPlaylistType] = useState<'queue' | 'episodes' | null>(null);
 
   const handleColorChange = (color: string) => {
     setBgColor(color);
@@ -45,102 +54,104 @@ export const MediaTab = () => {
     refetchInterval: 30000,
   });
 
-  return (
-    <Tabs defaultValue="arr" className="w-full">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="arr">*Arr Services</TabsTrigger>
-        <TabsTrigger value="torrent">qBittorrent</TabsTrigger>
-      </TabsList>
-      <TabsContent value="arr" className="mt-4">
-        <Card style={{ backgroundColor: bgColor }} className="relative">
-          <div className="absolute top-2 right-2">
-            <ColorPicker color={bgColor} onChange={handleColorChange} />
-          </div>
-          <CardHeader>
-            <CardTitle>*Arr Services</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-4">
-              <div>
-                <h3 className="font-medium mb-2">Radarr Queue</h3>
-                {radarrData?.length ? (
-                  <ul className="space-y-2">
-                    {radarrData.map((item: any) => (
-                      <li key={item.id} className="text-sm">
-                        {item.title} - {item.status}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No movies in queue</p>
-                )}
-              </div>
-              
-              <div>
-                <h3 className="font-medium mb-2">Sonarr Queue</h3>
-                {sonarrData?.length ? (
-                  <ul className="space-y-2">
-                    {sonarrData.map((item: any) => (
-                      <li key={item.id} className="text-sm">
-                        {item.series.title} - {item.episode.title}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No shows in queue</p>
-                )}
-              </div>
+  const RadarrIcon = serviceIcons.radarr;
+  const QbittorrentIcon = serviceIcons.qbittorrent;
 
-              <div>
-                <h3 className="font-medium mb-2">Lidarr Queue</h3>
-                {lidarrData?.length ? (
-                  <ul className="space-y-2">
-                    {lidarrData.map((item: any) => (
-                      <li key={item.id} className="text-sm">
-                        {item.artist.artistName} - {item.album.title}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-muted-foreground">No music in queue</p>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </TabsContent>
-      <TabsContent value="torrent" className="mt-4">
-        <Card style={{ backgroundColor: bgColor }} className="relative">
-          <div className="absolute top-2 right-2">
-            <ColorPicker color={bgColor} onChange={handleColorChange} />
+  useEffect(() => {
+    const handleMediaUpdate = (event: CustomEvent) => {
+      const { media, playlist, type } = event.detail;
+      setCurrentMedia(media);
+      setCurrentPlaylist(playlist || []);
+      setPlaylistType(type || 'queue');
+      setActiveTab('queue');
+    };
+
+    window.addEventListener('mediaUpdate' as any, handleMediaUpdate);
+    return () => {
+      window.removeEventListener('mediaUpdate' as any, handleMediaUpdate);
+    };
+  }, []);
+
+  const renderMediaPlayer = () => {
+    if (!currentMedia) return null;
+
+    return (
+      <Card style={{ backgroundColor: bgColor }} className="relative p-dynamic-4">
+        {currentMedia.includes('youtube.com') ? (
+          <AspectRatio ratio={16 / 9}>
+            <iframe
+              src={currentMedia}
+              className="w-full h-full rounded-lg"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </AspectRatio>
+        ) : currentMedia.includes('http') && !currentMedia.includes('.m3u8') ? (
+          <audio
+            src={currentMedia}
+            controls
+            autoPlay
+            className="w-full"
+          />
+        ) : (
+          <AspectRatio ratio={16 / 9}>
+            <video
+              src={currentMedia}
+              controls
+              autoPlay
+              className="w-full h-full rounded-lg"
+            />
+          </AspectRatio>
+        )}
+      </Card>
+    );
+  };
+
+  return (
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="grid w-full grid-cols-3">
+        <TabsTrigger value="arr" className="text-dynamic-base">
+          <div className="flex items-center gap-2">
+            <RadarrIcon className="w-4 h-4" />
+            *Arr Services
           </div>
-          <CardHeader>
-            <CardTitle>qBittorrent</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {qbittorrentData?.length ? (
-              <ul className="space-y-2">
-                {qbittorrentData.map((torrent: any) => (
-                  <li key={torrent.hash} className="text-sm">
-                    <div className="flex justify-between items-center">
-                      <span>{torrent.name}</span>
-                      <span>{Math.round(torrent.progress * 100)}%</span>
-                    </div>
-                    <div className="w-full bg-secondary h-1 rounded-full mt-1">
-                      <div 
-                        className="bg-primary h-1 rounded-full" 
-                        style={{ width: `${torrent.progress * 100}%` }}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm text-muted-foreground">No active torrents</p>
-            )}
-          </CardContent>
-        </Card>
+        </TabsTrigger>
+        <TabsTrigger value="torrent" className="text-dynamic-base">
+          <div className="flex items-center gap-2">
+            <QbittorrentIcon className="w-4 h-4" />
+            qBittorrent
+          </div>
+        </TabsTrigger>
+        <TabsTrigger value="queue" className="text-dynamic-base">
+          <div className="flex items-center gap-2">
+            Up Next
+          </div>
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="arr" className="mt-dynamic-4">
+        <QueueList
+          radarrData={radarrData || []}
+          sonarrData={sonarrData || []}
+          lidarrData={lidarrData || []}
+          bgColor={bgColor}
+        />
       </TabsContent>
+
+      <TabsContent value="queue" className="mt-dynamic-4 space-y-4">
+        {renderMediaPlayer()}
+        <MediaQueue
+          currentMedia={currentMedia}
+          playlist={currentPlaylist}
+          onPlaylistItemClick={setCurrentMedia}
+          bgColor={bgColor}
+          type={playlistType}
+        />
+      </TabsContent>
+
+      <div className="absolute top-2 right-2">
+        <ColorPicker color={bgColor} onChange={handleColorChange} />
+      </div>
     </Tabs>
   );
 };

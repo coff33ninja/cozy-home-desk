@@ -18,12 +18,26 @@ export default {
       },
     },
     extend: {
+      fontSize: {
+        'dynamic-xs': 'clamp(0.75rem, 1vw, 0.875rem)',
+        'dynamic-sm': 'clamp(0.875rem, 1.2vw, 1rem)',
+        'dynamic-base': 'clamp(1rem, 1.5vw, 1.125rem)',
+        'dynamic-lg': 'clamp(1.125rem, 2vw, 1.25rem)',
+        'dynamic-xl': 'clamp(1.25rem, 2.5vw, 1.5rem)',
+        'dynamic-2xl': 'clamp(1.5rem, 3vw, 2rem)',
+      },
+      spacing: {
+        'dynamic-1': 'clamp(0.25rem, 0.5vw, 0.5rem)',
+        'dynamic-2': 'clamp(0.5rem, 1vw, 1rem)',
+        'dynamic-4': 'clamp(1rem, 2vw, 2rem)',
+        'dynamic-8': 'clamp(2rem, 4vw, 4rem)',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "#111111",
+        foreground: "#ffffff",
         primary: {
           DEFAULT: "#9b87f5",
           light: "#E5DEFF",
@@ -33,6 +47,11 @@ export default {
           entertainment: "#FEF7CD",
           social: "#FEC6A1",
           productivity: "#E5DEFF",
+        },
+        dark: {
+          DEFAULT: "#111111",
+          card: "#1a1a1a",
+          border: "#333333",
         },
       },
       keyframes: {
