@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { parseM3U } from '@/lib/m3uParser';
+import { ColorPicker } from './settings/ColorPicker';
+import { getSettings, updateSettings } from '@/lib/localStorage';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
+import DOMPurify from 'dompurify';
 
 interface Channel {
   name: string;
@@ -20,6 +24,14 @@ export const MusicCard = () => {
   const [currentMedia, setCurrentMedia] = useState<string | null>(null);
   const [channels, setChannels] = useState<Channel[]>([]);
   const { toast } = useToast();
+  const settings = getSettings();
+  const [bgColor, setBgColor] = useState(settings.musicCardBg || 'rgba(255, 255, 255, 0.1)');
+
+  const handleColorChange = (color: string) => {
+    setBgColor(color);
+    const newSettings = { ...settings, musicCardBg: color };
+    updateSettings(newSettings);
+  };
 
   const handleYoutubePlay = (url: string) => {
     if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
@@ -31,7 +43,7 @@ export const MusicCard = () => {
       return;
     }
     const videoId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1];
-    setCurrentMedia(`https://www.youtube.com/embed/${videoId}?autoplay=1`);
+    setCurrentMedia(DOMPurify.sanitize(`https://www.youtube.com/embed/${videoId}?autoplay=1`));
   };
 
   const handleIPTVLoad = async (url: string) => {
@@ -66,7 +78,10 @@ export const MusicCard = () => {
   };
 
   return (
-    <Card className="p-4">
+    <Card className="p-4 relative" style={{ backgroundColor: bgColor }}>
+      <div className="absolute top-2 right-2">
+        <ColorPicker color={bgColor} onChange={handleColorChange} />
+      </div>
       <CardContent>
         <Tabs defaultValue="youtube" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
@@ -104,7 +119,7 @@ export const MusicCard = () => {
               <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
                 {channels.map((channel, index) => (
                   <div key={index} className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer"
-                       onClick={() => setCurrentMedia(channel.url)}>
+                       onClick={() => setCurrentMedia(DOMPurify.sanitize(channel.url))}>
                     {channel.logo && <img src={channel.logo} alt={channel.name} className="w-8 h-8 object-contain" />}
                     <span>{channel.name}</span>
                   </div>
@@ -119,25 +134,36 @@ export const MusicCard = () => {
               value={radioUrl}
               onChange={(e) => setRadioUrl(e.target.value)}
             />
-            <Button onClick={() => handleRadioPlay(radioUrl)}>Play</Button>
+            <Button onClick={() => handleRadioPlay(DOMPurify.sanitize(radioUrl))}>Play</Button>
           </TabsContent>
 
           {currentMedia && (
             <div className="mt-4">
               {currentMedia.includes('youtube.com') ? (
-                <iframe
-                  src={currentMedia}
-                  className="w-full h-64"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
+                <AspectRatio ratio={16 / 9}>
+                  <iframe
+                    src={currentMedia}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </AspectRatio>
+              ) : currentMedia.includes('http') && !currentMedia.includes('.m3u8') ? (
                 <audio
                   src={currentMedia}
                   controls
                   autoPlay
                   className="w-full"
                 />
+              ) : (
+                <AspectRatio ratio={16 / 9}>
+                  <video
+                    src={currentMedia}
+                    controls
+                    autoPlay
+                    className="w-full h-full"
+                  />
+                </AspectRatio>
               )}
             </div>
           )}

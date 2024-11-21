@@ -1,0 +1,33 @@
+name: Create Issues from Code Scanning
+
+on:
+  code_scanning_alert:
+    types: [created]
+
+jobs:
+  create_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create an Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const alert = context.payload.alert;
+            const { title, rule, most_recent_instance } = alert;
+            const issueTitle = `Code Scanning Alert: ${title}`;
+            const issueBody = `
+              A new code scanning alert was detected:
+              
+              **Rule**: ${rule.description}
+              **File**: ${most_recent_instance.location.path}
+              **Line**: ${most_recent_instance.location.start_line}
+              
+              Please review the details and address this alert.
+            `;
+            const issue = await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+            });
+            console.log(`Created issue: ${issue.data.html_url}`);

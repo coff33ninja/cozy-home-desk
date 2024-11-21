@@ -1,31 +1,37 @@
-import { ForecastDay } from '@/lib/weatherService';
-import { Cloud, Sun, CloudRain } from 'lucide-react';
+import { Cloud, Sun, CloudRain, Wind } from 'lucide-react';
 
-interface WeatherForecastProps {
-  forecast: ForecastDay[];
+interface WeatherProps {
+  temp: number;
+  condition: 'sunny' | 'cloudy' | 'rainy';
+  windSpeed?: number;
 }
 
-export const WeatherForecast = ({ forecast }: WeatherForecastProps) => {
-  const getWeatherIcon = (condition: ForecastDay['condition']) => {
-    switch (condition) {
+export const WeatherForecast = ({ temp, condition, windSpeed }: WeatherProps) => {
+  const getWeatherIcon = (weatherCondition: WeatherProps['condition']) => {
+    switch (weatherCondition) {
       case 'sunny':
-        return <Sun className="w-6 h-6" />;
+        return <Sun className="w-8 h-8" />;
       case 'cloudy':   
-        return <Cloud className="w-6 h-6" />;   
+        return <Cloud className="w-8 h-8" />;   
       case 'rainy':       
-        return <CloudRain className="w-6 h-6" />;   
+        return <CloudRain className="w-8 h-8" />;   
+      default:
+        return <Sun className="w-8 h-8" />;
     }
   };
 
   return (
-    <div className="grid grid-cols-5 gap-2 mt-4">
-      {forecast.map((day) => (
-        <div key={day.date} className="text-center p-2">
-          <div className="text-sm text-muted-foreground">{day.date}</div>
-          {getWeatherIcon(day.condition)}
-          <div className="text-sm font-semibold">{day.temp}°C</div>
+    <div className="flex flex-col items-center gap-4 p-4">
+      <div className="flex items-center gap-4">
+        {getWeatherIcon(condition)}
+        <div className="text-2xl font-bold">{temp}°C</div>
+      </div>
+      {windSpeed && (
+        <div className="flex items-center gap-2">
+          <Wind className="w-4 h-4" />
+          <span>{windSpeed} km/h</span>
         </div>
-      ))}
+      )}
     </div>
   );
 };

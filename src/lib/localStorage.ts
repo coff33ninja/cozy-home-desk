@@ -9,6 +9,20 @@ export const defaultSettings: Settings = {
   showWeather: true,
   showMusic: true,
   backgroundColor: '#9b87f5',
+  youtubeApiKey: '',
+  youtubeClientId: '',
+  radarrCredentials: { url: '', apiKey: '' },
+  sonarrCredentials: { url: '', apiKey: '' },
+  lidarrCredentials: { url: '', apiKey: '' },
+  qbittorrentCredentials: { url: '', username: '', password: '' },
+  weatherApiKey: '',
+  iptvPlaylistUrl: '',
+  iptvEpgUrl: '',
+  nightMode: false,
+  cardTextColor: '#000000',
+  cardBorderColor: '#e2e8f0',
+  cardBorderStyle: 'solid',
+  cardBackgroundColor: '#ffffff',
 };
 
 export const saveToStorage = <T>(key: string, data: T) => {
@@ -35,10 +49,13 @@ export const getFolders = () => {
 };
 
 export const getSettings = () => {
-  return loadFromStorage<Settings>(SETTINGS_KEY, defaultSettings);
+  const storedSettings = loadFromStorage<Settings>(SETTINGS_KEY, defaultSettings);
+  return { ...defaultSettings, ...storedSettings };
 };
 
 export const updateSettings = (settings: Partial<Settings>) => {
   const current = getSettings();
-  saveToStorage(SETTINGS_KEY, { ...current, ...settings });
+  const newSettings = { ...current, ...settings };
+  saveToStorage(SETTINGS_KEY, newSettings);
+  return newSettings;
 };

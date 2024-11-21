@@ -34,7 +34,21 @@ export interface Settings {
   wallpaperUrl?: string;
   weatherApiKey?: string;
   iptvPlaylistUrl?: string;
+  iptvEpgUrl?: string;
   nightMode?: boolean;
+  cardTextColor?: string;
+  cardBorderColor?: string;
+  cardBorderStyle?: 'solid' | 'dashed' | 'dotted' | 'none';
+  cardBackgroundColor?: string;
+  cardBackgroundImage?: string;
+  weatherCardBg?: string;
+  musicCardBg?: string;
+  mediaCardBg?: string;
+  favoritesCardBg?: string;
+  searchCardBg?: string;
+  youtubeCardBg?: string;
+  youtubeApiKey?: string;
+  youtubeClientId?: string;
 }
 
 export interface SettingsState {
