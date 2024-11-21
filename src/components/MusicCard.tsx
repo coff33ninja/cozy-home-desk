@@ -9,6 +9,7 @@ import { parseM3U } from '@/lib/m3uParser';
 import { ColorPicker } from './settings/ColorPicker';
 import { getSettings, updateSettings } from '@/lib/localStorage';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import DOMPurify from 'dompurify';
 
 interface Channel {
   name: string;
@@ -42,7 +43,7 @@ export const MusicCard = () => {
       return;
     }
     const videoId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1];
-    setCurrentMedia(`https://www.youtube.com/embed/${videoId}?autoplay=1`);
+    setCurrentMedia(DOMPurify.sanitize(`https://www.youtube.com/embed/${videoId}?autoplay=1`));
   };
 
   const handleIPTVLoad = async (url: string) => {
@@ -118,7 +119,7 @@ export const MusicCard = () => {
               <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
                 {channels.map((channel, index) => (
                   <div key={index} className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer"
-                       onClick={() => setCurrentMedia(channel.url)}>
+                       onClick={() => setCurrentMedia(DOMPurify.sanitize(channel.url))}>
                     {channel.logo && <img src={channel.logo} alt={channel.name} className="w-8 h-8 object-contain" />}
                     <span>{channel.name}</span>
                   </div>
@@ -133,7 +134,7 @@ export const MusicCard = () => {
               value={radioUrl}
               onChange={(e) => setRadioUrl(e.target.value)}
             />
-            <Button onClick={() => handleRadioPlay(radioUrl)}>Play</Button>
+            <Button onClick={() => handleRadioPlay(DOMPurify.sanitize(radioUrl))}>Play</Button>
           </TabsContent>
 
           {currentMedia && (
