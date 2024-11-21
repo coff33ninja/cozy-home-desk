@@ -5,53 +5,65 @@ import { SettingsPanel } from '@/components/SettingsPanel';
 import { MediaTab } from '@/components/MediaTab';
 import { FavoritesList } from '@/components/FavoritesList';
 import { YouTubeIntegration } from '@/components/YouTubeIntegration';
-import {
-  ResizablePanelGroup,
-  ResizablePanel,
-  ResizableHandle,
-} from "@/components/ui/resizable";
 import { getSettings } from '@/lib/localStorage';
+import { useState, useEffect } from 'react';
 
 const Index = () => {
   const settings = getSettings();
+  const [isMediaPlaying, setIsMediaPlaying] = useState(false);
+
+  useEffect(() => {
+    const handleMediaUpdate = () => {
+      setIsMediaPlaying(true);
+    };
+
+    window.addEventListener('mediaUpdate', handleMediaUpdate);
+    return () => {
+      window.removeEventListener('mediaUpdate', handleMediaUpdate);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen p-8 text-gray-900 dark:text-white bg-white/80 dark:bg-black/80 backdrop-blur-sm">
-      <div className="space-y-8 animate-fade-in">
-        <SearchBar />
-        
-        <ResizablePanelGroup direction="vertical" className="min-h-[800px] rounded-lg">
-          <ResizablePanel defaultSize={30}>
-            <ResizablePanelGroup direction="horizontal">
-              <ResizablePanel defaultSize={30} minSize={20}>
-                <WeatherCalendarClock className="h-full" />
-              </ResizablePanel>
-              
-              <ResizableHandle withHandle />
-              
-              <ResizablePanel defaultSize={40} minSize={30}>
-                <div className="h-full flex flex-col gap-4">
-                  {settings.showMusic && <MusicCard />}
-                  <YouTubeIntegration />
-                  <FavoritesList />
-                </div>
-              </ResizablePanel>
-              
-              <ResizableHandle withHandle />
-              
-              <ResizablePanel defaultSize={30} minSize={20}>
+    <div className="min-h-screen bg-[#111111] text-white p-4 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isMediaPlaying ? (
+            <>
+              <div className="col-span-1 md:col-span-2">
                 <MediaTab />
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-
-          <ResizableHandle withHandle />
-
-          <ResizablePanel defaultSize={70}>
-            <SettingsPanel />
-          </ResizablePanel>
-        </ResizablePanelGroup>
+              </div>
+              <div className="space-y-6">
+                <SearchBar />
+                {settings.showMusic && <MusicCard />}
+                <YouTubeIntegration />
+              </div>
+              <div className="col-span-1 md:col-span-2 lg:col-span-1">
+                <WeatherCalendarClock className="h-full min-h-[600px]" />
+              </div>
+              <div className="space-y-6">
+                <FavoritesList />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="col-span-1 md:col-span-2 lg:col-span-1">
+                <WeatherCalendarClock className="h-full min-h-[600px]" />
+              </div>
+              <div className="space-y-6">
+                <SearchBar />
+                {settings.showMusic && <MusicCard />}
+                <YouTubeIntegration />
+              </div>
+              <div className="space-y-6">
+                <MediaTab />
+                <FavoritesList />
+              </div>
+            </>
+          )}
+        </div>
       </div>
+      
+      <SettingsPanel />
     </div>
   );
 };

@@ -49,6 +49,7 @@ export interface Settings {
   youtubeCardBg?: string;
   youtubeApiKey?: string;
   youtubeClientId?: string;
+  currentMedia?: string;
 }
 
 export interface SettingsState {

@@ -16,14 +16,6 @@ interface UISettingsTabProps {
 export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps) => {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <span>Night Mode</span>
-        <Switch
-          checked={settings.nightMode}
-          onCheckedChange={(checked) => onSettingChange('nightMode', checked)}
-        />
-      </div>
-
       <div className="space-y-4">
         <Label>Card Styling</Label>
         <Card className="p-4 space-y-4">
@@ -40,7 +32,7 @@ export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps)
               </Tooltip>
             </div>
             <ColorPicker
-              color={settings.cardTextColor || '#000000'}
+              color={settings.cardTextColor || '#ffffff'}
               onChange={(color) => onSettingChange('cardTextColor', color)}
             />
           </div>
@@ -50,7 +42,7 @@ export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps)
               <Label>Border Color</Label>
             </div>
             <ColorPicker
-              color={settings.cardBorderColor || '#e2e8f0'}
+              color={settings.cardBorderColor || '#333333'}
               onChange={(color) => onSettingChange('cardBorderColor', color)}
             />
           </div>
@@ -84,7 +76,7 @@ export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps)
               </Tooltip>
             </div>
             <ColorPicker
-              color={settings.cardBackgroundColor || '#ffffff'}
+              color={settings.cardBackgroundColor || '#1a1a1a'}
               onChange={(color) => onSettingChange('cardBackgroundColor', color)}
             />
           </div>

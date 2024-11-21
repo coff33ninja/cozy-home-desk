@@ -1,7 +1,7 @@
 import { ChromePicker } from 'react-color';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Settings2 } from 'lucide-react';
+import { Settings2, Check } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,17 +17,29 @@ interface ColorPickerProps {
 
 export const ColorPicker = ({ color, onChange, className }: ColorPickerProps) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [tempColor, setTempColor] = useState(color);
+
+  const handleColorChange = (color: any) => {
+    // Convert to solid color by setting alpha to 1
+    const { r, g, b } = color.rgb;
+    setTempColor(`rgb(${r}, ${g}, ${b})`);
+  };
+
+  const handleApplyColor = () => {
+    onChange(tempColor);
+    setShowColorPicker(false);
+  };
 
   return (
     <div className={className}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="bg-background">
             <Settings2 className="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onSelect={() => setShowColorPicker(!showColorPicker)}>
+        <DropdownMenuContent className="bg-background border-none">
+          <DropdownMenuItem onSelect={() => setShowColorPicker(!showColorPicker)} className="bg-background">
             Change Color
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -35,10 +47,20 @@ export const ColorPicker = ({ color, onChange, className }: ColorPickerProps) =>
 
       {showColorPicker && (
         <div className="absolute right-0 top-12 z-50">
-          <ChromePicker
-            color={color}
-            onChange={(color) => onChange(`rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`)}
-          />
+          <div className="relative bg-background rounded-lg shadow-lg">
+            <ChromePicker 
+              color={tempColor}
+              onChange={handleColorChange}
+              disableAlpha={true} // Disable transparency
+            />
+            <Button
+              className="absolute -bottom-8 right-0 mt-2"
+              size="sm"
+              onClick={handleApplyColor}
+            >
+              <Check className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       )}
     </div>
