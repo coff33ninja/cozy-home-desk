@@ -1,0 +1,42 @@
+name: Weekly Issue Reminder
+
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Every Monday at 9:00 AM UTC
+
+jobs:
+  create_reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a Reminder Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const issueTitle = "Weekly Reminder: Review Open Issues and PRs";
+            const issueBody = `
+              This is a friendly reminder to review the following:
+              - Open issues
+              - Pull requests
+              - Pending tasks or milestones
+
+              Let's keep the project on track!
+            `;
+            const { data: existingIssues } = await github.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "reminder"
+            });
+
+            if (existingIssues.length === 0) {
+              const issue = await github.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ["reminder"],
+              });
+              console.log(`Created issue: ${issue.data.html_url}`);
+            } else {
+              console.log("A reminder issue already exists.");
+            }

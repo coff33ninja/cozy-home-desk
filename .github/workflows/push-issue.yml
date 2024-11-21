@@ -1,0 +1,32 @@
+name: Open Issue on Push to Main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create an Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const commitMessage = context.payload.head_commit.message;
+            const issueTitle = `New Commit to Main: ${commitMessage}`;
+            const issueBody = `
+              A new commit was pushed to the main branch:
+              
+              **Commit Message**: ${commitMessage}
+              **Commit URL**: ${context.payload.head_commit.url}
+              
+              Please review any changes or address necessary follow-ups.
+            `;
+            const issue = await github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+            });
+            console.log(`Created issue: ${issue.data.html_url}`);
