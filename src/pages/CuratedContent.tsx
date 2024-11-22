@@ -6,7 +6,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { MediaPlayer } from "@/components/media/MediaPlayer";
 import { MediaQueue } from "@/components/media/MediaQueue";
 import { extractMediaUrls } from "@/lib/urlExtractor";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const CuratedContent = () => {
   const [websiteUrl, setWebsiteUrl] = useState('');
@@ -14,6 +15,7 @@ const CuratedContent = () => {
   const [playlist, setPlaylist] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const extractUrls = async (url: string) => {
     if (!url) {
@@ -60,10 +62,21 @@ const CuratedContent = () => {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between mb-dynamic-8">
+        <h1 className="text-dynamic-2xl font-bold">Curated Content</h1>
+        <Button 
+          variant="outline" 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Dashboard
+        </Button>
+      </div>
+
       <Card>
         <CardContent className="p-6">
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold">Curated Content</h2>
             <div className="flex gap-2">
               <Input
                 placeholder="Enter website URL to extract media"
