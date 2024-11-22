@@ -10,7 +10,6 @@ import {
   fetchQBittorrentData 
 } from '@/lib/mediaServices';
 import { serviceIcons } from '@/lib/icons';
-import { MediaPlayer } from './media/MediaPlayer';
 import { MediaQueue } from './media/MediaQueue';
 import { QueueList } from './media/QueueList';
 import { Card } from './ui/card';
@@ -136,6 +135,10 @@ export const MediaTab = () => {
           lidarrData={lidarrData || []}
           bgColor={bgColor}
         />
+      </TabsContent>
+
+      <TabsContent value="torrent" className="mt-dynamic-4">
+        {/* Add torrent content here */}
       </TabsContent>
 
       <TabsContent value="queue" className="mt-dynamic-4 space-y-4">

@@ -1,12 +1,14 @@
 # Homepage Dashboard
 
-A customizable dashboard with weather, media services integration, and IPTV support.
+A customizable dashboard with weather, media services integration, and search functionality.
 
 ## Features
 
+- Multi-platform search integration
+  - Google, Bing, DuckDuckGo, Reddit, OpenAI
+  - Customizable search engine selection
 - Weather widget with API integration and fallback mock data
-- Media services integration (Radarr, Sonarr, Lidarr, qBittorrent)
-- YouTube Music and IPTV playlist support
+- Media services integration
   - YouTube Music iframe player integration
   - M3U playlist parser for IPTV channels
   - Online radio station streaming
@@ -21,9 +23,6 @@ A customizable dashboard with weather, media services integration, and IPTV supp
 3. Create a `.env` file with the following variables (optional):
    ```
    VITE_WEATHER_API_KEY=your_weather_api_key
-   VITE_RADARR_API_KEY=your_radarr_api_key
-   VITE_SONARR_API_KEY=your_sonarr_api_key
-   VITE_LIDARR_API_KEY=your_lidarr_api_key
    ```
 
 ## Media Features
