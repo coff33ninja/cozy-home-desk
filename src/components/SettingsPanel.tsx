@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Settings as SettingsIcon } from 'lucide-react';
+import { Settings as SettingsIcon, Check } from 'lucide-react';
 import { Settings } from '@/types/types';
 import { getSettings, updateSettings } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
@@ -7,11 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UISettingsTab } from './settings/UISettingsTab';
 import { ServicesTab } from './settings/ServicesTab';
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/components/ui/use-toast";
 
 export const SettingsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<Settings>(getSettings());
+  const [pendingSettings, setPendingSettings] = useState<Settings>(settings);
   const panelRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -27,18 +30,21 @@ export const SettingsPanel = () => {
   }, []);
 
   const handleSettingChange = (key: keyof Settings, value: any) => {
-    const newSettings = { ...settings, [key]: value };
-    setSettings(newSettings);
-    updateSettings(newSettings);
+    setPendingSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const applySettings = () => {
+    setSettings(pendingSettings);
+    updateSettings(pendingSettings);
 
     // Apply card styling to all cards
-    document.documentElement.style.setProperty('--card-text-color', newSettings.theme.cardTextColor || '#000000');
-    document.documentElement.style.setProperty('--card-border-color', newSettings.theme.cardBorderColor || '#e2e8f0');
-    document.documentElement.style.setProperty('--card-border-style', newSettings.theme.cardBorderStyle || 'solid');
-    document.documentElement.style.setProperty('--card-background-color', newSettings.theme.cardBackgroundColor || '#ffffff');
+    document.documentElement.style.setProperty('--card-text-color', pendingSettings.theme.cardTextColor || '#000000');
+    document.documentElement.style.setProperty('--card-border-color', pendingSettings.theme.cardBorderColor || '#e2e8f0');
+    document.documentElement.style.setProperty('--card-border-style', pendingSettings.theme.cardBorderStyle || 'solid');
+    document.documentElement.style.setProperty('--card-background-color', pendingSettings.theme.cardBackgroundColor || '#ffffff');
     
-    if (newSettings.theme.cardBackgroundImage) {
-      document.documentElement.style.setProperty('--card-background-image', `url(${newSettings.theme.cardBackgroundImage})`);
+    if (pendingSettings.theme.cardBackgroundImage) {
+      document.documentElement.style.setProperty('--card-background-image', `url(${pendingSettings.theme.cardBackgroundImage})`);
     } else {
       document.documentElement.style.setProperty('--card-background-image', 'none');
     }
@@ -50,6 +56,11 @@ export const SettingsPanel = () => {
         document.documentElement.classList.remove('dark');
       }
     }
+
+    toast({
+      title: "Settings Applied",
+      description: "Your settings have been updated successfully.",
+    });
   };
 
   return (
@@ -76,17 +87,27 @@ export const SettingsPanel = () => {
             <div className="h-[400px]">
               <TabsContent value="ui" className="mt-0 h-full">
                 <ScrollArea className="h-full pr-4">
-                  <UISettingsTab settings={settings} onSettingChange={handleSettingChange} />
+                  <UISettingsTab settings={pendingSettings} onSettingChange={handleSettingChange} />
                 </ScrollArea>
               </TabsContent>
 
               <TabsContent value="services" className="mt-0 h-full">
                 <ScrollArea className="h-full pr-4">
-                  <ServicesTab settings={settings} onSettingChange={handleSettingChange} />
+                  <ServicesTab settings={pendingSettings} onSettingChange={handleSettingChange} />
                 </ScrollArea>
               </TabsContent>
             </div>
           </Tabs>
+
+          <div className="mt-4 flex justify-end">
+            <Button 
+              onClick={applySettings}
+              className="flex items-center gap-2"
+            >
+              <Check className="w-4 h-4" />
+              Apply Changes
+            </Button>
+          </div>
         </div>
       )}
     </div>
