@@ -17,7 +17,9 @@ export interface Folder {
 
 export interface ServiceCredentials {
   url: string;
-  apiKey: string;
+  apiKey?: string;
+  username?: string;
+  password?: string;
 }
 
 export interface QBittorrentCredentials {

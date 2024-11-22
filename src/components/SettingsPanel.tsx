@@ -32,13 +32,13 @@ export const SettingsPanel = () => {
     updateSettings(newSettings);
 
     // Apply card styling to all cards
-    document.documentElement.style.setProperty('--card-text-color', newSettings.cardTextColor || '#000000');
-    document.documentElement.style.setProperty('--card-border-color', newSettings.cardBorderColor || '#e2e8f0');
-    document.documentElement.style.setProperty('--card-border-style', newSettings.cardBorderStyle || 'solid');
-    document.documentElement.style.setProperty('--card-background-color', newSettings.cardBackgroundColor || '#ffffff');
+    document.documentElement.style.setProperty('--card-text-color', newSettings.theme.cardTextColor || '#000000');
+    document.documentElement.style.setProperty('--card-border-color', newSettings.theme.cardBorderColor || '#e2e8f0');
+    document.documentElement.style.setProperty('--card-border-style', newSettings.theme.cardBorderStyle || 'solid');
+    document.documentElement.style.setProperty('--card-background-color', newSettings.theme.cardBackgroundColor || '#ffffff');
     
-    if (newSettings.cardBackgroundImage) {
-      document.documentElement.style.setProperty('--card-background-image', `url(${newSettings.cardBackgroundImage})`);
+    if (newSettings.theme.cardBackgroundImage) {
+      document.documentElement.style.setProperty('--card-background-image', `url(${newSettings.theme.cardBackgroundImage})`);
     } else {
       document.documentElement.style.setProperty('--card-background-image', 'none');
     }

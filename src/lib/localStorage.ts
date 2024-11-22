@@ -27,6 +27,7 @@ export const defaultSettings: Settings = {
     cardBorderColor: '#333333',
     cardBorderStyle: 'solid',
     cardBackgroundColor: '#1a1a1a',
+    cardBackgroundImage: '',
     glassEffect: false,
     borderRadius: 'medium'
   },
