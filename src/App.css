@@ -31,6 +31,12 @@
   }
 }
 
+@media (min-width: 768px) {
+  .your-class {
+    padding: 20px;
+    font-size: 1.2rem;
+  }
+}
 .card {
   padding: 2em;
 }
