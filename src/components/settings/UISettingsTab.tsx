@@ -7,6 +7,7 @@ import { ColorPicker } from './ColorPicker';
 import { Card } from '@/components/ui/card';
 import { Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Separator } from '@/components/ui/separator';
 
 interface UISettingsTabProps {
   settings: Settings;
@@ -14,11 +15,70 @@ interface UISettingsTabProps {
 }
 
 export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps) => {
+  const handleThemeChange = (key: keyof Settings['theme'], value: any) => {
+    onSettingChange('theme', { ...settings.theme, [key]: value });
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label>Theme Colors</Label>
+          <Switch
+            checked={settings.theme.glassEffect}
+            onCheckedChange={(checked) => handleThemeChange('glassEffect', checked)}
+          />
+          <Label>Glass Effect</Label>
+        </div>
+
+        <Card className="p-4 space-y-4">
+          <div className="space-y-2">
+            <Label>Primary Color</Label>
+            <ColorPicker
+              color={settings.theme.primaryColor}
+              onChange={(color) => handleThemeChange('primaryColor', color)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Secondary Color</Label>
+            <ColorPicker
+              color={settings.theme.secondaryColor}
+              onChange={(color) => handleThemeChange('secondaryColor', color)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Accent Color</Label>
+            <ColorPicker
+              color={settings.theme.accentColor}
+              onChange={(color) => handleThemeChange('accentColor', color)}
+            />
+          </div>
+        </Card>
+
+        <Separator />
+
         <Label>Card Styling</Label>
         <Card className="p-4 space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Label>Border Radius</Label>
+            </div>
+            <RadioGroup
+              value={settings.theme.borderRadius}
+              onValueChange={(value) => handleThemeChange('borderRadius', value)}
+              className="grid grid-cols-2 gap-2"
+            >
+              {['none', 'small', 'medium', 'large'].map((radius) => (
+                <div key={radius} className="flex items-center space-x-2">
+                  <RadioGroupItem value={radius} id={radius} />
+                  <Label htmlFor={radius}>{radius.charAt(0).toUpperCase() + radius.slice(1)}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Label>Text Color</Label>
@@ -32,26 +92,16 @@ export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps)
               </Tooltip>
             </div>
             <ColorPicker
-              color={settings.cardTextColor || '#ffffff'}
-              onChange={(color) => onSettingChange('cardTextColor', color)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label>Border Color</Label>
-            </div>
-            <ColorPicker
-              color={settings.cardBorderColor || '#333333'}
-              onChange={(color) => onSettingChange('cardBorderColor', color)}
+              color={settings.theme.cardTextColor}
+              onChange={(color) => handleThemeChange('cardTextColor', color)}
             />
           </div>
 
           <div className="space-y-2">
             <Label>Border Style</Label>
             <RadioGroup
-              value={settings.cardBorderStyle || 'solid'}
-              onValueChange={(value) => onSettingChange('cardBorderStyle', value)}
+              value={settings.theme.cardBorderStyle}
+              onValueChange={(value) => handleThemeChange('cardBorderStyle', value)}
               className="grid grid-cols-2 gap-2"
             >
               {['solid', 'dashed', 'dotted', 'none'].map((style) => (
@@ -76,8 +126,8 @@ export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps)
               </Tooltip>
             </div>
             <ColorPicker
-              color={settings.cardBackgroundColor || '#1a1a1a'}
-              onChange={(color) => onSettingChange('cardBackgroundColor', color)}
+              color={settings.theme.cardBackgroundColor}
+              onChange={(color) => handleThemeChange('cardBackgroundColor', color)}
             />
           </div>
 
@@ -96,8 +146,8 @@ export const UISettingsTab = ({ settings, onSettingChange }: UISettingsTabProps)
             <Input
               type="url"
               placeholder="Enter image URL"
-              value={settings.cardBackgroundImage || ''}
-              onChange={(e) => onSettingChange('cardBackgroundImage', e.target.value)}
+              value={settings.theme.cardBackgroundImage || ''}
+              onChange={(e) => handleThemeChange('cardBackgroundImage', e.target.value)}
               className="w-full"
             />
           </div>

@@ -19,10 +19,21 @@ export const defaultSettings: Settings = {
   iptvPlaylistUrl: '',
   iptvEpgUrl: '',
   nightMode: false,
-  cardTextColor: '#000000',
-  cardBorderColor: '#e2e8f0',
-  cardBorderStyle: 'solid',
-  cardBackgroundColor: '#ffffff',
+  theme: {
+    primaryColor: '#9b87f5',
+    secondaryColor: '#7E69AB',
+    accentColor: '#6E59A5',
+    cardTextColor: '#ffffff',
+    cardBorderColor: '#333333',
+    cardBorderStyle: 'solid',
+    cardBackgroundColor: '#1a1a1a',
+    glassEffect: false,
+    borderRadius: 'medium'
+  },
+  layout: {
+    widgetSizes: {},
+    order: []
+  },
   favoritesCardBg: 'rgba(255, 255, 255, 0.1)',
   musicCardBg: 'rgba(255, 255, 255, 0.1)',
   searchCardBg: 'rgba(17, 17, 17, 0.7)',

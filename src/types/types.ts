@@ -1,7 +1,4 @@
-export interface LayoutSettings {
-  order: string[];
-  collapsed: Record<string, boolean>;
-}
+export type WidgetSize = 'small' | 'medium' | 'large' | 'full';
 
 export type Category = 'work' | 'entertainment' | 'social' | 'productivity';
 
@@ -20,9 +17,31 @@ export interface Folder {
 
 export interface ServiceCredentials {
   url: string;
-  apiKey?: string;
-  username?: string;
-  password?: string;
+  apiKey: string;
+}
+
+export interface QBittorrentCredentials {
+  url: string;
+  username: string;
+  password: string;
+}
+
+export interface LayoutSettings {
+  widgetSizes: Record<string, WidgetSize>;
+  order: string[];
+}
+
+export interface ThemeSettings {
+  primaryColor: string;
+  secondaryColor: string;
+  accentColor: string;
+  cardTextColor: string;
+  cardBorderColor: string;
+  cardBorderStyle: string;
+  cardBackgroundColor: string;
+  cardBackgroundImage?: string;
+  glassEffect: boolean;
+  borderRadius: 'none' | 'small' | 'medium' | 'large';
 }
 
 export interface Settings {
@@ -35,20 +54,16 @@ export interface Settings {
   radarrCredentials: ServiceCredentials;
   sonarrCredentials: ServiceCredentials;
   lidarrCredentials: ServiceCredentials;
-  qbittorrentCredentials: ServiceCredentials;
+  qbittorrentCredentials: QBittorrentCredentials;
   weatherApiKey: string;
   iptvPlaylistUrl: string;
   iptvEpgUrl: string;
   nightMode: boolean;
-  cardTextColor: string;
-  cardBorderColor: string;
-  cardBorderStyle: string;
-  cardBackgroundColor: string;
-  cardBackgroundImage?: string;
-  favoritesCardBg?: string;
-  musicCardBg?: string;
-  searchCardBg?: string;
-  youtubeCardBg?: string;
-  mediaCardBg?: string;
+  theme: ThemeSettings;
   layout?: LayoutSettings;
+  favoritesCardBg: string;
+  musicCardBg: string;
+  searchCardBg: string;
+  youtubeCardBg: string;
+  mediaCardBg: string;
 }
