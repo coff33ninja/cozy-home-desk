@@ -1,6 +1,6 @@
 import { SearchBar } from '@/components/SearchBar';
 import { WeatherCalendarClock } from '@/components/WeatherCalendarClock';
-import { MusicCard } from '@/components/MusicCard';
+import { MediaPlayer } from '@/components/MediaPlayer';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { MediaTab } from '@/components/MediaTab';
 import { FavoritesList } from '@/components/FavoritesList';
@@ -47,7 +47,7 @@ const Index = () => {
     if (settings.showMusic) {
       const musicWidget = (
         <DraggableWidget id="music" title="Music" key="music">
-          <MusicCard />
+          <MediaPlayer />
         </DraggableWidget>
       );
       baseWidgets.splice(2, 0, musicWidget);
@@ -56,7 +56,7 @@ const Index = () => {
     if (isMediaPlaying) {
       const mediaPlayerWidget = (
         <DraggableWidget id="media-player" title="Media Player" key="media-player">
-          <MediaTab />
+          <MediaPlayer />
         </DraggableWidget>
       );
       baseWidgets.splice(0, 0, mediaPlayerWidget);
