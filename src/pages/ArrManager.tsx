@@ -10,11 +10,14 @@ import { serviceIcons } from "@/lib/icons";
 import { getSettings } from "@/lib/localStorage";
 import { fetchRadarrQueue, fetchSonarrQueue, fetchLidarrQueue } from "@/lib/mediaServices";
 import { ArrControls } from "@/components/arr/ArrControls";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const ArrManager = () => {
   const { toast } = useToast();
   const settings = getSettings();
   const [selectedService, setSelectedService] = useState<'radarr' | 'sonarr' | 'lidarr'>('radarr');
+  const navigate = useNavigate();
 
   const { data: radarrData, refetch: refetchRadarr } = useQuery({
     queryKey: ['radarrQueue'],
@@ -40,7 +43,17 @@ const ArrManager = () => {
 
   return (
     <div className="container mx-auto p-dynamic-4 space-y-dynamic-4">
-      <h1 className="text-dynamic-2xl font-bold mb-dynamic-8">*Arr Services Manager</h1>
+      <div className="flex items-center justify-between mb-dynamic-8">
+        <h1 className="text-dynamic-2xl font-bold">*Arr Services Manager</h1>
+        <Button 
+          variant="outline" 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Dashboard
+        </Button>
+      </div>
 
       <Tabs value={selectedService} onValueChange={(value: any) => setSelectedService(value)}>
         <TabsList className="grid w-full grid-cols-3">
