@@ -1,12 +1,14 @@
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import DOMPurify from 'dompurify';
 
-interface PlayerProps {
+interface MediaPlayerProps {
   currentMedia: string | null;
+  playlist?: any[];
+  onPlaylistItemClick?: (url: string) => void;
   bgColor: string;
 }
 
-export const Player = ({ currentMedia, bgColor }: PlayerProps) => {
+export const MediaPlayer = ({ currentMedia, bgColor }: MediaPlayerProps) => {
   if (!currentMedia) return null;
 
   const sanitizedUrl = DOMPurify.sanitize(currentMedia);
