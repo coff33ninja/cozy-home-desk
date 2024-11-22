@@ -23,6 +23,11 @@ export const defaultSettings: Settings = {
   cardBorderColor: '#e2e8f0',
   cardBorderStyle: 'solid',
   cardBackgroundColor: '#ffffff',
+  favoritesCardBg: 'rgba(255, 255, 255, 0.1)',
+  musicCardBg: 'rgba(255, 255, 255, 0.1)',
+  searchCardBg: 'rgba(17, 17, 17, 0.7)',
+  youtubeCardBg: 'rgba(255, 255, 255, 0.1)',
+  mediaCardBg: '#1a1a1a'
 };
 
 export const saveToStorage = <T>(key: string, data: T) => {
