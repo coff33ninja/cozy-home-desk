@@ -13,7 +13,6 @@ import { serviceIcons } from '@/lib/icons';
 import { MediaQueue } from './media/MediaQueue';
 import { QueueList } from './media/QueueList';
 import { Card } from './ui/card';
-import { AspectRatio } from './ui/aspect-ratio';
 
 export const MediaTab = () => {
   const settings = getSettings();
@@ -71,41 +70,6 @@ export const MediaTab = () => {
     };
   }, []);
 
-  const renderMediaPlayer = () => {
-    if (!currentMedia) return null;
-
-    return (
-      <Card style={{ backgroundColor: bgColor }} className="relative p-dynamic-4">
-        {currentMedia.includes('youtube.com') ? (
-          <AspectRatio ratio={16 / 9}>
-            <iframe
-              src={currentMedia}
-              className="w-full h-full rounded-lg"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </AspectRatio>
-        ) : currentMedia.includes('http') && !currentMedia.includes('.m3u8') ? (
-          <audio
-            src={currentMedia}
-            controls
-            autoPlay
-            className="w-full"
-          />
-        ) : (
-          <AspectRatio ratio={16 / 9}>
-            <video
-              src={currentMedia}
-              controls
-              autoPlay
-              className="w-full h-full rounded-lg"
-            />
-          </AspectRatio>
-        )}
-      </Card>
-    );
-  };
-
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid w-full grid-cols-3">
@@ -141,15 +105,16 @@ export const MediaTab = () => {
         {/* Add torrent content here */}
       </TabsContent>
 
-      <TabsContent value="queue" className="mt-dynamic-4 space-y-4">
-        {renderMediaPlayer()}
-        <MediaQueue
-          currentMedia={currentMedia}
-          playlist={currentPlaylist}
-          onPlaylistItemClick={setCurrentMedia}
-          bgColor={bgColor}
-          type={playlistType}
-        />
+      <TabsContent value="queue" className="mt-dynamic-4">
+        <Card style={{ backgroundColor: bgColor }} className="relative p-dynamic-4">
+          <MediaQueue
+            currentMedia={currentMedia}
+            playlist={currentPlaylist}
+            onPlaylistItemClick={setCurrentMedia}
+            bgColor={bgColor}
+            type={playlistType}
+          />
+        </Card>
       </TabsContent>
 
       <div className="absolute top-2 right-2">

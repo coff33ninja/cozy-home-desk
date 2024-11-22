@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { parseM3U } from '@/lib/m3uParser';
 import { ColorPicker } from './settings/ColorPicker';
 import { getSettings, updateSettings } from '@/lib/localStorage';
+import { AspectRatio } from './ui/aspect-ratio';
 import DOMPurify from 'dompurify';
 
 interface Channel {
@@ -21,6 +22,7 @@ export const MusicCard = () => {
   const [iptvUrl, setIptvUrl] = useState('');
   const [radioUrl, setRadioUrl] = useState('');
   const [channels, setChannels] = useState<Channel[]>([]);
+  const [currentMedia, setCurrentMedia] = useState<string | null>(null);
   const { toast } = useToast();
   const settings = getSettings();
   const [bgColor, setBgColor] = useState(settings.musicCardBg || 'rgba(255, 255, 255, 0.1)');
@@ -42,8 +44,9 @@ export const MusicCard = () => {
     }
     const videoId = url.split('v=')[1]?.split('&')[0] || url.split('youtu.be/')[1];
     const mediaUrl = DOMPurify.sanitize(`https://www.youtube.com/embed/${videoId}?autoplay=1`);
+    setCurrentMedia(mediaUrl);
     
-    // Dispatch event for MediaTab
+    // Dispatch event for MediaTab playlist
     const event = new CustomEvent('mediaUpdate', {
       detail: {
         media: mediaUrl,
@@ -83,8 +86,9 @@ export const MusicCard = () => {
       return;
     }
     const mediaUrl = DOMPurify.sanitize(url);
+    setCurrentMedia(mediaUrl);
     
-    // Dispatch event for MediaTab
+    // Dispatch event for MediaTab playlist
     const event = new CustomEvent('mediaUpdate', {
       detail: {
         media: mediaUrl,
@@ -95,12 +99,48 @@ export const MusicCard = () => {
     window.dispatchEvent(event);
   };
 
+  const renderMediaPlayer = () => {
+    if (!currentMedia) return null;
+
+    return (
+      <div className="mb-4">
+        {currentMedia.includes('youtube.com') ? (
+          <AspectRatio ratio={16 / 9}>
+            <iframe
+              src={currentMedia}
+              className="w-full h-full rounded-lg"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </AspectRatio>
+        ) : currentMedia.includes('http') && !currentMedia.includes('.m3u8') ? (
+          <audio
+            src={currentMedia}
+            controls
+            autoPlay
+            className="w-full"
+          />
+        ) : (
+          <AspectRatio ratio={16 / 9}>
+            <video
+              src={currentMedia}
+              controls
+              autoPlay
+              className="w-full h-full rounded-lg"
+            />
+          </AspectRatio>
+        )}
+      </div>
+    );
+  };
+
   return (
     <Card className="p-dynamic-4 relative" style={{ backgroundColor: bgColor }}>
       <div className="absolute top-dynamic-2 right-dynamic-2">
         <ColorPicker color={bgColor} onChange={handleColorChange} />
       </div>
       <CardContent>
+        {renderMediaPlayer()}
         <Tabs defaultValue="youtube" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="youtube" className="text-dynamic-sm">
@@ -140,9 +180,11 @@ export const MusicCard = () => {
                 {channels.map((channel, index) => (
                   <div key={index} className="flex items-center gap-2 p-2 hover:bg-accent rounded-md cursor-pointer"
                        onClick={() => {
+                         const mediaUrl = DOMPurify.sanitize(channel.url);
+                         setCurrentMedia(mediaUrl);
                          const event = new CustomEvent('mediaUpdate', {
                            detail: {
-                             media: DOMPurify.sanitize(channel.url),
+                             media: mediaUrl,
                              playlist: channels,
                              type: 'episodes'
                            }
