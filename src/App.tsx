@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { MainLayout } from "./components/layout/MainLayout";
 import Index from "./pages/Index";
 import ArrManager from "./pages/ArrManager";
+import CuratedContent from "./pages/CuratedContent";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/arr-manager" element={<ArrManager />} />
+            <Route path="/curated-content" element={<CuratedContent />} />
           </Routes>
         </MainLayout>
       </BrowserRouter>
