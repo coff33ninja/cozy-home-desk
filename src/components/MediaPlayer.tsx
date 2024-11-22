@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Music, Radio, Tv } from 'lucide-react';
+import { Music, Radio, Tv, ExternalLink } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -101,7 +101,8 @@ export const MediaPlayer = () => {
             onClick={() => navigate('/curated-content')}
             className="flex items-center gap-2"
           >
-            Go to Curated Content
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Curated Content
           </Button>
         </div>
       </div>
