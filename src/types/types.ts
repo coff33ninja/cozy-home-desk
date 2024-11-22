@@ -60,7 +60,6 @@ export interface Settings {
   weatherApiKey: string;
   iptvPlaylistUrl: string;
   iptvEpgUrl: string;
-  nightMode: boolean;
   theme: ThemeSettings;
   layout?: LayoutSettings;
   favoritesCardBg: string;

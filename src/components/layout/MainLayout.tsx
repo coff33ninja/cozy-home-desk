@@ -9,7 +9,7 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   useEffect(() => {
-    // Force dark mode
+    // Force dark mode - this cannot be changed
     document.documentElement.classList.add('dark');
   }, []);
 

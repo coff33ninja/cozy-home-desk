@@ -38,22 +38,15 @@ export const SettingsPanel = () => {
     updateSettings(pendingSettings);
 
     // Apply card styling to all cards
-    document.documentElement.style.setProperty('--card-text-color', pendingSettings.theme.cardTextColor || '#000000');
-    document.documentElement.style.setProperty('--card-border-color', pendingSettings.theme.cardBorderColor || '#e2e8f0');
+    document.documentElement.style.setProperty('--card-text-color', pendingSettings.theme.cardTextColor || '#ffffff');
+    document.documentElement.style.setProperty('--card-border-color', pendingSettings.theme.cardBorderColor || '#333333');
     document.documentElement.style.setProperty('--card-border-style', pendingSettings.theme.cardBorderStyle || 'solid');
-    document.documentElement.style.setProperty('--card-background-color', pendingSettings.theme.cardBackgroundColor || '#ffffff');
+    document.documentElement.style.setProperty('--card-background-color', pendingSettings.theme.cardBackgroundColor || '#1a1a1a');
     
     if (pendingSettings.theme.cardBackgroundImage) {
       document.documentElement.style.setProperty('--card-background-image', `url(${pendingSettings.theme.cardBackgroundImage})`);
     } else {
       document.documentElement.style.setProperty('--card-background-image', 'none');
-    }
-
-    // Apply night mode
-    if (pendingSettings.nightMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
     }
 
     toast({

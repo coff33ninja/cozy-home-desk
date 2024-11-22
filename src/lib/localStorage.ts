@@ -18,7 +18,6 @@ export const defaultSettings: Settings = {
   weatherApiKey: '',
   iptvPlaylistUrl: '',
   iptvEpgUrl: '',
-  nightMode: false,
   theme: {
     primaryColor: '#9b87f5',
     secondaryColor: '#7E69AB',
