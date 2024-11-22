@@ -10,7 +10,7 @@ import { getSettings, updateSettings } from '@/lib/localStorage';
 import { MediaControls } from './media/MediaControls';
 import { ChannelList } from './media/ChannelList';
 import { useNavigate } from 'react-router-dom';
-import { Player } from './media/MediaPlayer';
+import { MediaPlayer as Player } from './media/MediaPlayer';
 import { Channel } from '@/types/types';
 import DOMPurify from 'dompurify';
 
