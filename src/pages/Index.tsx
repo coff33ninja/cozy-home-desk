@@ -26,43 +26,13 @@ const Index = () => {
   }, []);
 
   const renderWidgets = () => {
-    if (isMediaPlaying) {
-      return [
-        <DraggableWidget id="media" title="Media Player" key="media">
-          <MediaTab />
-        </DraggableWidget>,
-        <DraggableWidget id="search" title="Search" key="search">
-          <SearchBar />
-        </DraggableWidget>,
-        {settings.showMusic && (
-          <DraggableWidget id="music" title="Music" key="music">
-            <MusicCard />
-          </DraggableWidget>
-        )},
-        <DraggableWidget id="youtube" title="YouTube" key="youtube">
-          <YouTubeIntegration />
-        </DraggableWidget>,
-        <DraggableWidget id="weather" title="Weather & Calendar" key="weather">
-          <WeatherCalendarClock className="h-full min-h-[600px]" />
-        </DraggableWidget>,
-        <DraggableWidget id="favorites" title="Favorites" key="favorites">
-          <FavoritesList />
-        </DraggableWidget>
-      ].filter(Boolean);
-    }
-
-    return [
+    const baseWidgets = [
       <DraggableWidget id="weather" title="Weather & Calendar" key="weather">
         <WeatherCalendarClock className="h-full min-h-[600px]" />
       </DraggableWidget>,
       <DraggableWidget id="search" title="Search" key="search">
         <SearchBar />
       </DraggableWidget>,
-      {settings.showMusic && (
-        <DraggableWidget id="music" title="Music" key="music">
-          <MusicCard />
-        </DraggableWidget>
-      )},
       <DraggableWidget id="youtube" title="YouTube" key="youtube">
         <YouTubeIntegration />
       </DraggableWidget>,
@@ -72,7 +42,27 @@ const Index = () => {
       <DraggableWidget id="favorites" title="Favorites" key="favorites">
         <FavoritesList />
       </DraggableWidget>
-    ].filter(Boolean);
+    ];
+
+    if (settings.showMusic) {
+      const musicWidget = (
+        <DraggableWidget id="music" title="Music" key="music">
+          <MusicCard />
+        </DraggableWidget>
+      );
+      baseWidgets.splice(2, 0, musicWidget);
+    }
+
+    if (isMediaPlaying) {
+      const mediaPlayerWidget = (
+        <DraggableWidget id="media-player" title="Media Player" key="media-player">
+          <MediaTab />
+        </DraggableWidget>
+      );
+      baseWidgets.splice(0, 0, mediaPlayerWidget);
+    }
+
+    return baseWidgets;
   };
 
   return (
