@@ -49,12 +49,11 @@ export const SettingsPanel = () => {
       document.documentElement.style.setProperty('--card-background-image', 'none');
     }
 
-    if (key === 'nightMode') {
-      if (value) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
+    // Apply night mode
+    if (pendingSettings.nightMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
     }
 
     toast({
