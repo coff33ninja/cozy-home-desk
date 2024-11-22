@@ -10,9 +10,11 @@ import { getSettings, updateSettings } from '@/lib/localStorage';
 import { MediaControls } from './media/MediaControls';
 import { ChannelList } from './media/ChannelList';
 import { useNavigate } from 'react-router-dom';
-import { MediaPlayer as Player } from './media/MediaPlayer';
+import { Player } from './media/MediaPlayer';
+import { Channel } from '@/types/types';
+import DOMPurify from 'dompurify';
 
-export const MusicCard = () => {
+export const MediaPlayer = () => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [iptvUrl, setIptvUrl] = useState('');
   const [radioUrl, setRadioUrl] = useState('');
@@ -96,6 +98,13 @@ export const MusicCard = () => {
           <ColorPicker color={bgColor} onChange={handleColorChange} />
           <Button 
             variant="outline" 
+            onClick={() => navigate('/curated-content')}
+            className="flex items-center gap-2"
+          >
+            Go to Curated Content
+          </Button>
+          <Button 
+            variant="outline" 
             onClick={() => navigate('/')}
             className="flex items-center gap-2"
           >
@@ -105,7 +114,7 @@ export const MusicCard = () => {
         </div>
       </div>
       <CardContent>
-        <Player currentMedia={currentMedia} />
+        <Player currentMedia={currentMedia} bgColor={bgColor} />
         <Tabs defaultValue="youtube" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="youtube" className="text-dynamic-sm">
@@ -137,6 +146,7 @@ export const MusicCard = () => {
               url={iptvUrl}
               onUrlChange={setIptvUrl}
               onLoad={handleIPTVLoad}
+              onPlay={() => {}}
             />
             <ChannelList 
               channels={channels} 
