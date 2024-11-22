@@ -30,18 +30,18 @@ const Index = () => {
       <DraggableWidget id="weather" title="Weather & Calendar" key="weather">
         <WeatherCalendarClock className="h-full min-h-[600px]" />
       </DraggableWidget>,
-      <DraggableWidget id="search" title="Search" key="search">
+      <div key="search" className="w-full">
         <SearchBar />
-      </DraggableWidget>,
+      </div>,
       <DraggableWidget id="youtube" title="YouTube" key="youtube">
         <YouTubeIntegration />
       </DraggableWidget>,
       <DraggableWidget id="media" title="Media Queue" key="media">
         <MediaTab />
       </DraggableWidget>,
-      <DraggableWidget id="favorites" title="Favorites" key="favorites">
+      <div key="favorites" className="w-full">
         <FavoritesList />
-      </DraggableWidget>
+      </div>
     ];
 
     if (settings.showMusic) {
