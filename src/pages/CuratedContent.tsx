@@ -5,27 +5,52 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { MediaPlayer } from "@/components/media/MediaPlayer";
 import { MediaQueue } from "@/components/media/MediaQueue";
+import { extractMediaUrls } from "@/lib/urlExtractor";
+import { Loader2 } from "lucide-react";
 
 const CuratedContent = () => {
   const [websiteUrl, setWebsiteUrl] = useState('');
   const [currentMedia, setCurrentMedia] = useState<string | null>(null);
   const [playlist, setPlaylist] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const extractUrls = async (url: string) => {
-    try {
-      // This is a placeholder for the URL extraction logic
-      // We'll implement this once you provide the website details
+    if (!url) {
       toast({
-        title: "URL Extraction",
-        description: "Please provide the website URL to extract media content.",
+        title: "Error",
+        description: "Please enter a valid URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const mediaUrls = await extractMediaUrls(url);
+      
+      if (mediaUrls.length === 0) {
+        toast({
+          title: "No media found",
+          description: "No media content was found on the provided URL",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setPlaylist(mediaUrls);
+      toast({
+        title: "Success",
+        description: `Found ${mediaUrls.length} media items`,
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to extract URLs from the website.",
+        description: "Failed to extract URLs from the website. Make sure the URL is accessible.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,9 +69,20 @@ const CuratedContent = () => {
                 placeholder="Enter website URL to extract media"
                 value={websiteUrl}
                 onChange={(e) => setWebsiteUrl(e.target.value)}
+                className="flex-1"
               />
-              <Button onClick={() => extractUrls(websiteUrl)}>
-                Extract Media
+              <Button 
+                onClick={() => extractUrls(websiteUrl)}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Extracting...
+                  </>
+                ) : (
+                  'Extract Media'
+                )}
               </Button>
             </div>
           </div>
