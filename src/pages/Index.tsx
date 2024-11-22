@@ -7,6 +7,8 @@ import { FavoritesList } from '@/components/FavoritesList';
 import { YouTubeIntegration } from '@/components/YouTubeIntegration';
 import { getSettings } from '@/lib/localStorage';
 import { useState, useEffect } from 'react';
+import { DraggableWidget } from '@/components/layout/DraggableWidget';
+import { LayoutManager } from '@/components/layout/LayoutManager';
 
 const Index = () => {
   const settings = getSettings();
@@ -23,46 +25,63 @@ const Index = () => {
     };
   }, []);
 
+  const renderWidgets = () => {
+    if (isMediaPlaying) {
+      return [
+        <DraggableWidget id="media" title="Media Player" key="media">
+          <MediaTab />
+        </DraggableWidget>,
+        <DraggableWidget id="search" title="Search" key="search">
+          <SearchBar />
+        </DraggableWidget>,
+        {settings.showMusic && (
+          <DraggableWidget id="music" title="Music" key="music">
+            <MusicCard />
+          </DraggableWidget>
+        )},
+        <DraggableWidget id="youtube" title="YouTube" key="youtube">
+          <YouTubeIntegration />
+        </DraggableWidget>,
+        <DraggableWidget id="weather" title="Weather & Calendar" key="weather">
+          <WeatherCalendarClock className="h-full min-h-[600px]" />
+        </DraggableWidget>,
+        <DraggableWidget id="favorites" title="Favorites" key="favorites">
+          <FavoritesList />
+        </DraggableWidget>
+      ].filter(Boolean);
+    }
+
+    return [
+      <DraggableWidget id="weather" title="Weather & Calendar" key="weather">
+        <WeatherCalendarClock className="h-full min-h-[600px]" />
+      </DraggableWidget>,
+      <DraggableWidget id="search" title="Search" key="search">
+        <SearchBar />
+      </DraggableWidget>,
+      {settings.showMusic && (
+        <DraggableWidget id="music" title="Music" key="music">
+          <MusicCard />
+        </DraggableWidget>
+      )},
+      <DraggableWidget id="youtube" title="YouTube" key="youtube">
+        <YouTubeIntegration />
+      </DraggableWidget>,
+      <DraggableWidget id="media" title="Media Queue" key="media">
+        <MediaTab />
+      </DraggableWidget>,
+      <DraggableWidget id="favorites" title="Favorites" key="favorites">
+        <FavoritesList />
+      </DraggableWidget>
+    ].filter(Boolean);
+  };
+
   return (
     <div className="min-h-screen bg-[#111111] text-white p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {isMediaPlaying ? (
-            <>
-              <div className="col-span-1 md:col-span-2">
-                <MediaTab />
-              </div>
-              <div className="space-y-6">
-                <SearchBar />
-                {settings.showMusic && <MusicCard />}
-                <YouTubeIntegration />
-              </div>
-              <div className="col-span-1 md:col-span-2 lg:col-span-1">
-                <WeatherCalendarClock className="h-full min-h-[600px]" />
-              </div>
-              <div className="space-y-6">
-                <FavoritesList />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="col-span-1 md:col-span-2 lg:col-span-1">
-                <WeatherCalendarClock className="h-full min-h-[600px]" />
-              </div>
-              <div className="space-y-6">
-                <SearchBar />
-                {settings.showMusic && <MusicCard />}
-                <YouTubeIntegration />
-              </div>
-              <div className="space-y-6">
-                <MediaTab />
-                <FavoritesList />
-              </div>
-            </>
-          )}
-        </div>
+      <div className="max-w-7xl mx-auto">
+        <LayoutManager>
+          {renderWidgets()}
+        </LayoutManager>
       </div>
-      
       <SettingsPanel />
     </div>
   );
