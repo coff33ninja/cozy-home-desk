@@ -1,5 +1,4 @@
 import { SearchBar } from '@/components/SearchBar';
-import { WeatherCalendarClock } from '@/components/WeatherCalendarClock';
 import { MediaPlayer } from '@/components/MediaPlayer';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { MediaTab } from '@/components/MediaTab';
@@ -11,6 +10,7 @@ import { DraggableWidget } from '@/components/layout/DraggableWidget';
 import { LayoutManager } from '@/components/layout/LayoutManager';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { TimeWeatherPanel } from '@/components/TimeWeatherPanel';
 
 const Index = () => {
   const settings = getSettings();
@@ -34,12 +34,7 @@ const Index = () => {
         <SearchBar />
       </div>,
       <div className="grid grid-cols-12 gap-6 mt-24" key="main-content">
-        <div className="col-span-3 h-[calc(100vh-8rem)] overflow-auto">
-          <DraggableWidget id="weather" title="Weather & Calendar">
-            <WeatherCalendarClock className="h-full max-h-[calc(100vh-10rem)]" />
-          </DraggableWidget>
-        </div>
-        <div className="col-span-6 h-[calc(100vh-8rem)] overflow-auto">
+        <div className="col-span-8 h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="media" title="Media Player">
             <div className="space-y-6">
               <MediaPlayer />
@@ -47,7 +42,7 @@ const Index = () => {
             </div>
           </DraggableWidget>
         </div>
-        <div className="col-span-3 h-[calc(100vh-8rem)] overflow-auto">
+        <div className="col-span-4 h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="queue" title="Media Queue">
             <MediaTab />
           </DraggableWidget>
@@ -80,6 +75,7 @@ const Index = () => {
           {renderWidgets()}
         </LayoutManager>
       </div>
+      <TimeWeatherPanel />
       <SettingsPanel />
     </div>
   );
