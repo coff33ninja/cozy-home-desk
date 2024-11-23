@@ -30,24 +30,24 @@ const Index = () => {
 
   const renderWidgets = () => {
     const baseWidgets = [
-      <div key="search" className="w-full fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-2xl px-4">
+      <div key="search" className="w-full fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-xl px-4">
         <SearchBar />
       </div>,
-      <div className="grid grid-cols-12 gap-4 mt-20" key="main-content">
-        <div className="col-span-3">
+      <div className="grid grid-cols-12 gap-6 mt-24" key="main-content">
+        <div className="col-span-3 h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="weather" title="Weather & Calendar">
-            <WeatherCalendarClock className="h-full" />
+            <WeatherCalendarClock className="h-full max-h-[calc(100vh-10rem)]" />
           </DraggableWidget>
         </div>
-        <div className="col-span-6">
+        <div className="col-span-6 h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="media" title="Media Player">
-            <div className="space-y-4">
+            <div className="space-y-6">
               <MediaPlayer />
               <YouTubeIntegration />
             </div>
           </DraggableWidget>
         </div>
-        <div className="col-span-3">
+        <div className="col-span-3 h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="queue" title="Media Queue">
             <MediaTab />
           </DraggableWidget>
@@ -60,8 +60,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-[#111111] text-white p-4 md:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-4">
+      <div className="max-w-[1920px] mx-auto">
+        <div className="fixed top-6 right-6 z-50 flex items-center gap-4">
           <Button
             variant="ghost"
             size="icon"
@@ -72,7 +72,7 @@ const Index = () => {
           </Button>
         </div>
         {showFavorites && (
-          <div className="fixed right-4 top-20 z-50 w-96">
+          <div className="fixed right-6 top-24 z-50 w-96">
             <FavoritesList />
           </div>
         )}

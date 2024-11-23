@@ -53,12 +53,12 @@ export const WeatherCalendarClock = ({ className }: WeatherCalendarClockProps) =
 
   return (
     <Card 
-      className={`relative h-full transition-all duration-300 bg-[#111111] text-white p-dynamic-4 ${className}`}
+      className={`relative h-full transition-all duration-300 bg-[#111111] text-white p-dynamic-2 ${className}`}
       style={{ backgroundColor: bgColor }}
     >
-      <div className="absolute top-dynamic-2 right-dynamic-2 flex items-center gap-dynamic-4">
-        <div className="flex items-center space-x-dynamic-2">
-          <Label htmlFor="clock-type" className="text-dynamic-sm text-gray-300">Analog</Label>
+      <div className="absolute top-dynamic-1 right-dynamic-1 flex items-center gap-dynamic-2">
+        <div className="flex items-center space-x-dynamic-1">
+          <Label htmlFor="clock-type" className="text-dynamic-xs text-gray-300">Analog</Label>
           <Switch
             id="clock-type"
             checked={isAnalog}
@@ -68,21 +68,21 @@ export const WeatherCalendarClock = ({ className }: WeatherCalendarClockProps) =
         <ColorPicker color={bgColor} onChange={setBgColor} />
       </div>
 
-      <div className="p-dynamic-4 space-y-dynamic-4 h-full flex flex-col items-center">
-        <div className="flex justify-center items-center h-48">
+      <div className="p-dynamic-2 space-y-dynamic-2 h-full flex flex-col items-center">
+        <div className="flex justify-center items-center h-32">
           {isAnalog ? (
             <AnalogClock />
           ) : (
-            <div className="text-dynamic-2xl font-bold text-center font-mono">{time}</div>
+            <div className="text-dynamic-xl font-bold text-center font-mono">{time}</div>
           )}
         </div>
 
-        <div className="flex-grow w-full max-w-md">
+        <div className="w-full max-w-xs">
           <CalendarUI
             mode="single"
             selected={date}
             onSelect={(newDate) => setDate(newDate || new Date())}
-            className="rounded-md w-full bg-[#1a1a1a] text-white border-gray-700"
+            className="rounded-md w-full scale-90 transform-origin-top bg-[#1a1a1a] text-white border-gray-700"
           />
         </div>
 
