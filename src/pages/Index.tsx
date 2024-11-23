@@ -4,16 +4,12 @@ import { SettingsPanel } from '@/components/SettingsPanel';
 import { MediaTab } from '@/components/MediaTab';
 import { FavoritesList } from '@/components/FavoritesList';
 import { YouTubeIntegration } from '@/components/YouTubeIntegration';
-import { getSettings } from '@/lib/localStorage';
 import { useState, useEffect } from 'react';
-import { DraggableWidget } from '@/components/layout/DraggableWidget';
-import { LayoutManager } from '@/components/layout/LayoutManager';
 import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TimeWeatherPanel } from '@/components/TimeWeatherPanel';
 
 const Index = () => {
-  const settings = getSettings();
   const [isMediaPlaying, setIsMediaPlaying] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
 
@@ -27,31 +23,6 @@ const Index = () => {
       window.removeEventListener('mediaUpdate', handleMediaUpdate);
     };
   }, []);
-
-  const renderWidgets = () => {
-    const baseWidgets = [
-      <div key="search" className="w-full fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-xl px-4">
-        <SearchBar />
-      </div>,
-      <div className="flex gap-6 mt-24 w-full max-w-[1920px] mx-auto px-4" key="main-content">
-        <div className="w-[70%] h-[calc(100vh-8rem)] overflow-auto">
-          <DraggableWidget id="media" title="Media Player">
-            <div className="space-y-6">
-              <MediaPlayer />
-              <YouTubeIntegration />
-            </div>
-          </DraggableWidget>
-        </div>
-        <div className="w-[30%] h-[calc(100vh-8rem)] overflow-auto">
-          <DraggableWidget id="queue" title="Media Queue">
-            <MediaTab />
-          </DraggableWidget>
-        </div>
-      </div>
-    ];
-
-    return baseWidgets;
-  };
 
   return (
     <div className="min-h-screen bg-[#111111] text-white">
@@ -71,9 +42,28 @@ const Index = () => {
             <FavoritesList />
           </div>
         )}
-        <LayoutManager>
-          {renderWidgets()}
-        </LayoutManager>
+        <div className="w-full">
+          <div key="search" className="w-full fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-xl px-4">
+            <SearchBar />
+          </div>
+          <div className="flex gap-6 mt-24 w-full max-w-[1920px] mx-auto px-4" key="main-content">
+            <div className="w-[70%] h-[calc(100vh-8rem)] overflow-auto">
+              <div className="space-y-6">
+                <div className="bg-dark-card rounded-lg p-4">
+                  <h2 className="text-xl font-semibold mb-4">Media Player</h2>
+                  <MediaPlayer />
+                  <YouTubeIntegration />
+                </div>
+              </div>
+            </div>
+            <div className="w-[30%] h-[calc(100vh-8rem)] overflow-auto">
+              <div className="bg-dark-card rounded-lg p-4">
+                <h2 className="text-xl font-semibold mb-4">Media Queue</h2>
+                <MediaTab />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <TimeWeatherPanel />
       <SettingsPanel />
