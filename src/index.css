@@ -7,7 +7,7 @@
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
     --card-text-color: #ffffff;
-    --card-border-color: #333333;
+    --card-border-color: #9b87f5;
     --card-border-style: solid;
     --card-background-color: #1a1a1a;
     --card-background-image: none;
@@ -44,12 +44,19 @@
 @layer components {
   .card {
     color: var(--card-text-color);
-    border-color: var(--card-border-color);
+    border: 1px solid var(--card-border-color);
     border-style: var(--card-border-style);
     background-color: var(--card-background-color);
     background-image: var(--card-background-image);
     background-size: cover;
     background-position: center;
+    border-radius: 0.5rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .card:hover {
+    border-color: #9b87f5;
+    box-shadow: 0 0 10px rgba(155, 135, 245, 0.1);
   }
 }
 
