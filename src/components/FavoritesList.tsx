@@ -40,13 +40,14 @@ export const FavoritesList = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-4 relative p-4 rounded-lg" style={{ backgroundColor: bgColor }}>
-      <div className="absolute top-2 right-2">
+    <div className="w-full max-w-4xl mx-auto p-4 space-y-4 relative rounded-lg shadow-lg" style={{ backgroundColor: bgColor }}>
+      <div className="absolute top-4 right-4">
         <ColorPicker color={bgColor} onChange={handleColorChange} />
       </div>
-      <div className="flex justify-between items-center">
+      
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-semibold">Favorites</h2>
-        <Button onClick={() => setShowAddForm(!showAddForm)} variant="ghost">
+        <Button onClick={() => setShowAddForm(!showAddForm)} variant="ghost" className="w-full sm:w-auto">
           <Plus className="w-4 h-4 mr-2" />
           Add New
         </Button>
@@ -58,14 +59,16 @@ export const FavoritesList = () => {
             placeholder="Title"
             value={newFavorite.title}
             onChange={(e) => setNewFavorite({ ...newFavorite, title: e.target.value })}
+            className="w-full"
           />
           <Input
             placeholder="URL"
             value={newFavorite.url}
             onChange={(e) => setNewFavorite({ ...newFavorite, url: e.target.value })}
+            className="w-full"
           />
           <select
-            className="w-full p-2 rounded-lg bg-white/10"
+            className="w-full p-2 rounded-lg bg-white/10 border border-white/20"
             value={newFavorite.category}
             onChange={(e) => setNewFavorite({ ...newFavorite, category: e.target.value as Category })}
           >
@@ -74,21 +77,21 @@ export const FavoritesList = () => {
             <option value="social">Social</option>
             <option value="productivity">Productivity</option>
           </select>
-          <Button onClick={handleAdd}>Add Favorite</Button>
+          <Button onClick={handleAdd} className="w-full sm:w-auto">Add Favorite</Button>
         </div>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {favorites.map((favorite) => (
           <a
             key={favorite.id}
             href={favorite.url}
             className="p-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 
-                     transition-all duration-300 group"
+                     transition-all duration-300 group flex flex-col"
           >
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full bg-category-${favorite.category}`} />
-              <span className="font-medium group-hover:text-primary transition-colors">
+              <span className="font-medium group-hover:text-primary transition-colors line-clamp-1">
                 {favorite.title}
               </span>
             </div>

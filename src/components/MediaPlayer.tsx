@@ -91,28 +91,29 @@ export const MediaPlayer = () => {
   };
 
   return (
-    <Card className="p-dynamic-4 relative" style={{ backgroundColor: bgColor }}>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-4 md:space-y-0">
+    <Card className="p-4 sm:p-6 relative shadow-lg" style={{ backgroundColor: bgColor }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-4 sm:space-y-0">
         <h2 className="text-xl font-semibold">Media Player</h2>
         <div className="flex items-center justify-end space-x-4">
           <ColorPicker color={bgColor} onChange={handleColorChange} />
         </div>
       </div>
-      <CardContent>
+      
+      <CardContent className="p-0">
         <Player currentMedia={currentMedia} bgColor={bgColor} />
-        <Tabs defaultValue="youtube" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="youtube" className="text-dynamic-sm">
-              <Music className="w-4 h-4 mr-dynamic-2" />
+        <Tabs defaultValue="youtube" className="w-full mt-4">
+          <TabsList className="grid w-full grid-cols-3 mb-4">
+            <TabsTrigger value="youtube" className="text-sm sm:text-base">
+              <Music className="w-4 h-4 mr-2" />
               YouTube
             </TabsTrigger>
-            <TabsTrigger value="iptv" className="text-dynamic-sm">
-              <Tv className="w-4 h-4 mr-dynamic-2" />
+            <TabsTrigger value="iptv" className="text-sm sm:text-base">
+              <Tv className="w-4 h-4 mr-2" />
               IPTV
             </TabsTrigger>
-            <TabsTrigger value="radio" className="text-dynamic-sm flex items-center justify-between w-full">
+            <TabsTrigger value="radio" className="text-sm sm:text-base flex items-center justify-between w-full">
               <div className="flex items-center">
-                <Radio className="w-4 h-4 mr-dynamic-2" />
+                <Radio className="w-4 h-4 mr-2" />
                 Radio
               </div>
               <Button 
@@ -127,50 +128,52 @@ export const MediaPlayer = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="youtube">
-            <MediaControls
-              type="youtube"
-              url={youtubeUrl}
-              onUrlChange={setYoutubeUrl}
-              onPlay={handleYoutubePlay}
-            />
-          </TabsContent>
-
-          <TabsContent value="iptv">
-            <MediaControls
-              type="iptv"
-              url={iptvUrl}
-              onUrlChange={setIptvUrl}
-              onLoad={handleIPTVLoad}
-              onPlay={() => {}}
-            />
-            <ChannelList 
-              channels={channels} 
-              onChannelClick={(url) => {
-                setCurrentMedia(url);
-                dispatchMediaEvent(url, 'episodes');
-              }} 
-            />
-          </TabsContent>
-
-          <TabsContent value="radio">
-            <div className="space-y-4">
+          <div className="space-y-4">
+            <TabsContent value="youtube">
               <MediaControls
-                type="radio"
-                url={radioUrl}
-                onUrlChange={setRadioUrl}
-                onPlay={handleRadioPlay}
+                type="youtube"
+                url={youtubeUrl}
+                onUrlChange={setYoutubeUrl}
+                onPlay={handleYoutubePlay}
               />
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/curated-content')}
-                className="w-full lg:hidden flex items-center justify-center gap-2"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Curated Content
-              </Button>
-            </div>
-          </TabsContent>
+            </TabsContent>
+
+            <TabsContent value="iptv">
+              <MediaControls
+                type="iptv"
+                url={iptvUrl}
+                onUrlChange={setIptvUrl}
+                onLoad={handleIPTVLoad}
+                onPlay={() => {}}
+              />
+              <ChannelList 
+                channels={channels} 
+                onChannelClick={(url) => {
+                  setCurrentMedia(url);
+                  dispatchMediaEvent(url, 'episodes');
+                }} 
+              />
+            </TabsContent>
+
+            <TabsContent value="radio">
+              <div className="space-y-4">
+                <MediaControls
+                  type="radio"
+                  url={radioUrl}
+                  onUrlChange={setRadioUrl}
+                  onPlay={handleRadioPlay}
+                />
+                <Button 
+                  variant="outline" 
+                  onClick={() => navigate('/curated-content')}
+                  className="w-full lg:hidden flex items-center justify-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Curated Content
+                </Button>
+              </div>
+            </TabsContent>
+          </div>
         </Tabs>
       </CardContent>
     </Card>

@@ -56,18 +56,21 @@ export const SettingsPanel = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4">
+    <div className="fixed bottom-4 right-4 z-50">
       <Button
         variant="ghost"
         size="icon"
         onClick={() => setIsOpen(!isOpen)}
-        className="rounded-full w-12 h-12 bg-white dark:bg-gray-800"
+        className="rounded-full w-12 h-12 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
       >
         <SettingsIcon className="w-6 h-6" />
       </Button>
 
       {isOpen && (
-        <div ref={panelRef} className="absolute bottom-16 right-0 w-96 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg animate-fade-in shadow-lg">
+        <div 
+          ref={panelRef} 
+          className="absolute bottom-16 right-0 w-[90vw] sm:w-96 p-4 bg-dark-card rounded-lg animate-fade-in shadow-lg border border-dark-border"
+        >
           <h3 className="text-lg font-semibold mb-4">Settings</h3>
           
           <Tabs defaultValue="ui" className="w-full">
