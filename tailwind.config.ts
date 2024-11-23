@@ -51,7 +51,11 @@ export default {
         dark: {
           DEFAULT: "#111111",
           card: "#1a1a1a",
-          border: "#333333",
+          border: {
+            DEFAULT: "#333333",
+            highlight: "#9b87f5",
+            subtle: "#222222",
+          },
         },
       },
       keyframes: {
