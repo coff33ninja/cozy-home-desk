@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calendar as CalendarUI } from "@/components/ui/calendar";
 import { WeatherForecast } from './WeatherForecast';
 import { Card } from '@/components/ui/card';
+import { ColorPicker } from './settings/ColorPicker';
 import { fetchWeather, getCurrentLocation } from '@/lib/weatherService';
 import { useToast } from '@/hooks/use-toast';
 import { AnalogClock } from './AnalogClock';
@@ -15,6 +16,7 @@ interface WeatherCalendarClockProps {
 export const WeatherCalendarClock = ({ className }: WeatherCalendarClockProps) => {
   const [date, setDate] = useState<Date>(new Date());
   const [time, setTime] = useState<string>('');
+  const [bgColor, setBgColor] = useState('rgba(17, 17, 17, 0.7)');
   const [weather, setWeather] = useState<any>(null);
   const [isAnalog, setIsAnalog] = useState(true);
   const { toast } = useToast();
@@ -50,7 +52,10 @@ export const WeatherCalendarClock = ({ className }: WeatherCalendarClockProps) =
   }, [toast]);
 
   return (
-    <Card className={`relative h-full transition-all duration-300 bg-background text-foreground p-dynamic-2 ${className}`}>
+    <Card 
+      className={`relative h-full transition-all duration-300 bg-[#111111] text-white p-dynamic-2 ${className}`}
+      style={{ backgroundColor: bgColor }}
+    >
       <div className="absolute top-dynamic-1 right-dynamic-1 flex items-center gap-dynamic-2">
         <div className="flex items-center space-x-dynamic-1">
           <Label htmlFor="clock-type" className="text-dynamic-xs text-gray-300">Analog</Label>
@@ -60,6 +65,7 @@ export const WeatherCalendarClock = ({ className }: WeatherCalendarClockProps) =
             onCheckedChange={setIsAnalog}
           />
         </div>
+        <ColorPicker color={bgColor} onChange={setBgColor} />
       </div>
 
       <div className="p-dynamic-2 space-y-dynamic-2 h-full flex flex-col items-center">
@@ -76,7 +82,7 @@ export const WeatherCalendarClock = ({ className }: WeatherCalendarClockProps) =
             mode="single"
             selected={date}
             onSelect={(newDate) => setDate(newDate || new Date())}
-            className="rounded-md w-full scale-90 transform-origin-top"
+            className="rounded-md w-full scale-90 transform-origin-top bg-[#1a1a1a] text-white border-gray-700"
           />
         </div>
 

@@ -1,16 +1,17 @@
-import DOMPurify from 'dompurify';
-import { Play } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Play } from "lucide-react";
+import DOMPurify from 'dompurify';
 
 interface MediaQueueProps {
   currentMedia: string | null;
   playlist?: any[];
   onPlaylistItemClick?: (url: string) => void;
+  bgColor: string;
   type: 'queue' | 'episodes' | null;
 }
 
-export const MediaQueue = ({ currentMedia, playlist, onPlaylistItemClick, type }: MediaQueueProps) => {
+export const MediaQueue = ({ playlist, onPlaylistItemClick, bgColor, type }: MediaQueueProps) => {
   if (!playlist || playlist.length === 0) return null;
 
   const renderPlaylistItem = (item: any, index: number) => {
@@ -49,7 +50,7 @@ export const MediaQueue = ({ currentMedia, playlist, onPlaylistItemClick, type }
   };
 
   return (
-    <Card className="relative p-dynamic-4 bg-background">
+    <Card style={{ backgroundColor: bgColor }} className="relative p-dynamic-4">
       <CardContent>
         <h3 className="text-lg font-semibold mb-2">
           {type === 'episodes' ? 'Episodes' : 'Up Next'}

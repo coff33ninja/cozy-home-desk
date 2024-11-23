@@ -105,6 +105,9 @@ const CuratedContent = () => {
       {currentMedia && (
         <MediaPlayer
           currentMedia={currentMedia}
+          playlist={playlist}
+          onPlaylistItemClick={handlePlaylistItemClick}
+          bgColor="rgba(0, 0, 0, 0.2)"
         />
       )}
 
@@ -112,6 +115,7 @@ const CuratedContent = () => {
         currentMedia={currentMedia}
         playlist={playlist}
         onPlaylistItemClick={handlePlaylistItemClick}
+        bgColor="rgba(0, 0, 0, 0.2)"
         type="episodes"
       />
     </div>

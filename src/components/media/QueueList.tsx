@@ -1,19 +1,20 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { serviceIcons } from "@/lib/icons";
 
 interface QueueListProps {
   radarrData: any[];
   sonarrData: any[];
   lidarrData: any[];
+  bgColor: string;
 }
 
-export const QueueList = ({ radarrData, sonarrData, lidarrData }: QueueListProps) => {
+export const QueueList = ({ radarrData, sonarrData, lidarrData, bgColor }: QueueListProps) => {
   const RadarrIcon = serviceIcons.radarr;
   const SonarrIcon = serviceIcons.sonarr;
   const LidarrIcon = serviceIcons.lidarr;
 
   return (
-    <Card className="relative p-dynamic-4 bg-background">
+    <Card style={{ backgroundColor: bgColor }} className="relative p-dynamic-4">
       <CardContent className="space-y-4">
         <div>
           <h3 className="font-medium mb-2 text-lg flex items-center gap-2">
