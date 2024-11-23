@@ -16,8 +16,6 @@ import {
   Radio,
   Video
 } from 'lucide-react';
-import { ColorPicker } from './settings/ColorPicker';
-import { getSettings, updateSettings } from '@/lib/localStorage';
 import {
   Select,
   SelectContent,
@@ -46,14 +44,6 @@ const searchEngines = {
 export const SearchBar = () => {
   const [query, setQuery] = useState('');
   const [searchEngine, setSearchEngine] = useState('google');
-  const settings = getSettings();
-  const [bgColor, setBgColor] = useState(settings.searchCardBg || 'rgba(17, 17, 17, 0.7)');
-
-  const handleColorChange = (color: string) => {
-    setBgColor(color);
-    const newSettings = { ...settings, searchCardBg: color };
-    updateSettings(newSettings);
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,10 +88,7 @@ export const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-full backdrop-blur-md shadow-lg rounded-lg" style={{ backgroundColor: bgColor }}>
-      <div className="absolute top-2 right-2">
-        <ColorPicker color={bgColor} onChange={handleColorChange} />
-      </div>
+    <form onSubmit={handleSearch} className="w-full backdrop-blur-md shadow-lg rounded-lg bg-dark-card">
       <div className="relative group flex flex-col sm:flex-row gap-dynamic-2 p-dynamic-4">
         <Select defaultValue={searchEngine} onValueChange={setSearchEngine}>
           <SelectTrigger className="w-full sm:w-[180px] text-dynamic-sm bg-dark-card border-dark-border">
