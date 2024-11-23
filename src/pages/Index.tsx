@@ -33,8 +33,8 @@ const Index = () => {
       <div key="search" className="w-full fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-xl px-4">
         <SearchBar />
       </div>,
-      <div className="grid grid-cols-12 gap-6 mt-24" key="main-content">
-        <div className="col-span-8 h-[calc(100vh-8rem)] overflow-auto">
+      <div className="flex gap-6 mt-24" key="main-content">
+        <div className="w-[70%] h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="media" title="Media Player">
             <div className="space-y-6">
               <MediaPlayer />
@@ -42,7 +42,7 @@ const Index = () => {
             </div>
           </DraggableWidget>
         </div>
-        <div className="col-span-4 h-[calc(100vh-8rem)] overflow-auto">
+        <div className="w-[30%] h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="queue" title="Media Queue">
             <MediaTab />
           </DraggableWidget>
