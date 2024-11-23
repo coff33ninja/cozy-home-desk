@@ -10,7 +10,7 @@
     --card-border-color: #9b87f5;
     --card-border-style: solid;
     --card-background-color: #1a1a1a;
-    --card-background-image: none;
+    --card-background-image: linear-gradient(to left, #f7ba2b 0%, #ea5358 100%);
 
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
@@ -43,20 +43,56 @@
 
 @layer components {
   .card {
+    position: relative;
+    z-index: 1;
+    padding: 5px;
     color: var(--card-text-color);
-    border: 1px solid var(--card-border-color);
-    border-style: var(--card-border-style);
-    background-color: var(--card-background-color);
-    background-image: var(--card-background-image);
-    background-size: cover;
-    background-position: center;
-    border-radius: 0.5rem;
-    transition: border-color 0.3s ease;
+    background: var(--card-background-image);
+    border-radius: 1rem;
+    overflow: visible;
+    transition: all 0.3s ease;
   }
 
-  .card:hover {
-    border-color: #9b87f5;
-    box-shadow: 0 0 10px rgba(155, 135, 245, 0.1);
+  .card::after {
+    position: absolute;
+    content: "";
+    top: 30px;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    transform: scale(0.8);
+    filter: blur(25px);
+    background: var(--card-background-image);
+    transition: opacity .5s;
+  }
+
+  .card-content {
+    background: #181818;
+    color: #181818;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    border-radius: 0.7rem;
+    padding: 1rem;
+  }
+
+  .card:hover::after {
+    opacity: 0;
+  }
+
+  .card:hover .card-content {
+    color: #f7ba2b;
+    transition: color 1s;
+  }
+
+  .card-title {
+    font-weight: bold;
+    letter-spacing: 0.1em;
   }
 }
 
