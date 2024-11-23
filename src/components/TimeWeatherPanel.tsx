@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Clock, Cloud, ExternalLink } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Calendar } from './Calendar';
 import { WeatherCalendarClock } from './WeatherCalendarClock';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -22,7 +21,7 @@ export const TimeWeatherPanel = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
+    <div className="fixed top-4 left-4 z-50">
       <Button
         variant="ghost"
         size="icon"
@@ -34,7 +33,7 @@ export const TimeWeatherPanel = () => {
 
       {isOpen && (
         <div 
-          className="absolute bottom-16 left-0 w-[90vw] sm:w-96 p-4 bg-dark-card rounded-lg animate-fade-in shadow-lg border border-dark-border"
+          className="absolute top-16 left-0 w-[90vw] sm:w-96 p-4 bg-dark-card rounded-lg animate-fade-in shadow-lg border border-dark-border"
         >
           <h3 className="text-lg font-semibold mb-4">Time & Weather</h3>
           
@@ -42,7 +41,6 @@ export const TimeWeatherPanel = () => {
             <ScrollArea className="h-full pr-4">
               <div className="space-y-6">
                 <div className="text-3xl font-mono font-bold">{time}</div>
-                <Calendar />
                 <WeatherCalendarClock className="h-auto" />
               </div>
             </ScrollArea>
