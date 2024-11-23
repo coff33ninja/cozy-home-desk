@@ -9,10 +9,13 @@ import { getSettings } from '@/lib/localStorage';
 import { useState, useEffect } from 'react';
 import { DraggableWidget } from '@/components/layout/DraggableWidget';
 import { LayoutManager } from '@/components/layout/LayoutManager';
+import { Star } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const settings = getSettings();
   const [isMediaPlaying, setIsMediaPlaying] = useState(false);
+  const [showFavorites, setShowFavorites] = useState(false);
 
   useEffect(() => {
     const handleMediaUpdate = () => {
@@ -27,40 +30,30 @@ const Index = () => {
 
   const renderWidgets = () => {
     const baseWidgets = [
-      <DraggableWidget id="weather" title="Weather & Calendar" key="weather">
-        <WeatherCalendarClock className="h-full min-h-[600px]" />
-      </DraggableWidget>,
-      <div key="search" className="w-full">
+      <div key="search" className="w-full fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-2xl px-4">
         <SearchBar />
       </div>,
-      <DraggableWidget id="youtube" title="YouTube" key="youtube">
-        <YouTubeIntegration />
-      </DraggableWidget>,
-      <DraggableWidget id="media" title="Media Queue" key="media">
-        <MediaTab />
-      </DraggableWidget>,
-      <div key="favorites" className="w-full">
-        <FavoritesList />
+      <div className="grid grid-cols-12 gap-4 mt-20" key="main-content">
+        <div className="col-span-3">
+          <DraggableWidget id="weather" title="Weather & Calendar">
+            <WeatherCalendarClock className="h-full" />
+          </DraggableWidget>
+        </div>
+        <div className="col-span-6">
+          <DraggableWidget id="media" title="Media Player">
+            <div className="space-y-4">
+              <MediaPlayer />
+              <YouTubeIntegration />
+            </div>
+          </DraggableWidget>
+        </div>
+        <div className="col-span-3">
+          <DraggableWidget id="queue" title="Media Queue">
+            <MediaTab />
+          </DraggableWidget>
+        </div>
       </div>
     ];
-
-    if (settings.showMusic) {
-      const musicWidget = (
-        <DraggableWidget id="music" title="Music" key="music">
-          <MediaPlayer />
-        </DraggableWidget>
-      );
-      baseWidgets.splice(2, 0, musicWidget);
-    }
-
-    if (isMediaPlaying) {
-      const mediaPlayerWidget = (
-        <DraggableWidget id="media-player" title="Media Player" key="media-player">
-          <MediaPlayer />
-        </DraggableWidget>
-      );
-      baseWidgets.splice(0, 0, mediaPlayerWidget);
-    }
 
     return baseWidgets;
   };
@@ -68,6 +61,21 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#111111] text-white p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowFavorites(!showFavorites)}
+            className="rounded-full w-12 h-12 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-colors"
+          >
+            <Star className="w-6 h-6" />
+          </Button>
+        </div>
+        {showFavorites && (
+          <div className="fixed right-4 top-20 z-50 w-96">
+            <FavoritesList />
+          </div>
+        )}
         <LayoutManager>
           {renderWidgets()}
         </LayoutManager>

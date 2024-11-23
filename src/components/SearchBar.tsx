@@ -98,11 +98,11 @@ export const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-full max-w-2xl mx-auto relative p-dynamic-4 rounded-lg" style={{ backgroundColor: bgColor }}>
+    <form onSubmit={handleSearch} className="w-full backdrop-blur-md shadow-lg rounded-lg" style={{ backgroundColor: bgColor }}>
       <div className="absolute top-2 right-2">
         <ColorPicker color={bgColor} onChange={handleColorChange} />
       </div>
-      <div className="relative group flex flex-col sm:flex-row gap-dynamic-2">
+      <div className="relative group flex flex-col sm:flex-row gap-dynamic-2 p-dynamic-4">
         <Select defaultValue={searchEngine} onValueChange={setSearchEngine}>
           <SelectTrigger className="w-full sm:w-[180px] text-dynamic-sm bg-dark-card border-dark-border">
             <SelectValue placeholder="Select search engine">

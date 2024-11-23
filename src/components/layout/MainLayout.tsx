@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SideNav } from "./SideNav";
 import { useEffect } from "react";
 
 interface MainLayoutProps {
@@ -9,16 +10,18 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
   useEffect(() => {
-    // Force dark mode - this cannot be changed
     document.documentElement.classList.add('dark');
   }, []);
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-background">
-        <main className="container mx-auto p-4 md:p-8 animate-fade-in">
-          {children}
-        </main>
+      <div className="min-h-screen bg-background flex">
+        <SideNav />
+        <div className="flex-1 relative">
+          <main className="container mx-auto p-4 md:p-8 animate-fade-in">
+            {children}
+          </main>
+        </div>
       </div>
       <Toaster />
       <Sonner />
