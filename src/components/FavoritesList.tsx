@@ -5,21 +5,11 @@ import { getFavorites, saveFavorite } from '@/lib/localStorage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/use-toast';
-import { ColorPicker } from './settings/ColorPicker';
-import { getSettings, updateSettings } from '@/lib/localStorage';
 
 export const FavoritesList = () => {
   const [favorites, setFavorites] = useState<Favorite[]>(getFavorites());
   const [showAddForm, setShowAddForm] = useState(false);
   const [newFavorite, setNewFavorite] = useState({ title: '', url: '', category: 'work' as Category });
-  const settings = getSettings();
-  const [bgColor, setBgColor] = useState(settings.favoritesCardBg || 'rgba(255, 255, 255, 0.1)');
-
-  const handleColorChange = (color: string) => {
-    setBgColor(color);
-    const newSettings = { ...settings, favoritesCardBg: color };
-    updateSettings(newSettings);
-  };
 
   const handleAdd = () => {
     if (!newFavorite.title || !newFavorite.url) {
@@ -40,11 +30,7 @@ export const FavoritesList = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 space-y-4 relative rounded-lg shadow-lg" style={{ backgroundColor: bgColor }}>
-      <div className="absolute top-4 right-4">
-        <ColorPicker color={bgColor} onChange={handleColorChange} />
-      </div>
-      
+    <div className="w-full max-w-4xl mx-auto p-4 space-y-4 relative rounded-lg shadow-lg bg-dark-card">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-xl font-semibold">Favorites</h2>
         <Button onClick={() => setShowAddForm(!showAddForm)} variant="ghost" className="w-full sm:w-auto">

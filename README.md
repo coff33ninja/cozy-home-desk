@@ -13,7 +13,6 @@ A customizable dashboard with weather, media services integration, and search fu
   - M3U playlist parser for IPTV channels
   - Online radio station streaming
   - Channel guide interface
-- Customizable UI with themes and layout options
 - Settings management with local storage persistence
 
 ## Setup Instructions
@@ -61,8 +60,7 @@ A customizable dashboard with weather, media services integration, and search fu
    - Optimize component rendering
 
 4. UI Improvements:
-   - Add more theme options
-   - Implement drag-and-drop widget positioning
+   - Add theme options
    - Add widget size customization
    - Create mobile-responsive layouts
 

@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
-import { ColorPicker } from './settings/ColorPicker';
-import { getSettings, updateSettings } from '@/lib/localStorage';
 import { serviceIcons } from '@/lib/icons';
 import DOMPurify from 'dompurify';
 
@@ -39,16 +37,8 @@ export const YouTubeIntegration = () => {
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [isInitialized, setIsInitialized] = useState(false);
   const { toast } = useToast();
-  const settings = getSettings();
-  const [bgColor, setBgColor] = useState(settings.youtubeCardBg || 'rgba(255, 255, 255, 0.1)');
 
   const YoutubeIcon = serviceIcons.youtube;
-
-  const handleColorChange = (color: string) => {
-    setBgColor(color);
-    const newSettings = { ...settings, youtubeCardBg: color };
-    updateSettings(newSettings);
-  };
 
   useEffect(() => {
     const loadYouTubeApi = () => {
@@ -147,7 +137,6 @@ export const YouTubeIntegration = () => {
   const handlePlaylistClick = (playlistId: string) => {
     const mediaUrl = DOMPurify.sanitize(`https://www.youtube.com/embed/videoseries?list=${playlistId}&autoplay=1`);
     
-    // Dispatch event for MediaTab
     const event = new CustomEvent('mediaUpdate', {
       detail: {
         media: mediaUrl,
@@ -158,10 +147,7 @@ export const YouTubeIntegration = () => {
   };
 
   return (
-    <Card className="relative" style={{ backgroundColor: bgColor }}>
-      <div className="absolute top-2 right-2">
-        <ColorPicker color={bgColor} onChange={handleColorChange} />
-      </div>
+    <Card className="relative bg-dark-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <YoutubeIcon className="w-6 h-6" />
