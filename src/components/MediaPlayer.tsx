@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { parseM3U } from '@/lib/m3uParser';
+import { ColorPicker } from './settings/ColorPicker';
+import { getSettings, updateSettings } from '@/lib/localStorage';
 import { MediaControls } from './media/MediaControls';
 import { ChannelList } from './media/ChannelList';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +21,15 @@ export const MediaPlayer = () => {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [currentMedia, setCurrentMedia] = useState<string | null>(null);
   const { toast } = useToast();
+  const settings = getSettings();
+  const [bgColor, setBgColor] = useState(settings.musicCardBg || 'rgba(255, 255, 255, 0.1)');
   const navigate = useNavigate();
+
+  const handleColorChange = (color: string) => {
+    setBgColor(color);
+    const newSettings = { ...settings, musicCardBg: color };
+    updateSettings(newSettings);
+  };
 
   const handleYoutubePlay = (url: string) => {
     if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
@@ -81,13 +91,16 @@ export const MediaPlayer = () => {
   };
 
   return (
-    <Card className="p-4 sm:p-6 relative shadow-lg bg-dark-card">
+    <Card className="p-4 sm:p-6 relative shadow-lg" style={{ backgroundColor: bgColor }}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-4 sm:space-y-0">
         <h2 className="text-xl font-semibold">Media Player</h2>
+        <div className="flex items-center justify-end space-x-4">
+          <ColorPicker color={bgColor} onChange={handleColorChange} />
+        </div>
       </div>
       
       <CardContent className="p-0">
-        <Player currentMedia={currentMedia} />
+        <Player currentMedia={currentMedia} bgColor={bgColor} />
         <Tabs defaultValue="youtube" className="w-full mt-4">
           <TabsList className="grid w-full grid-cols-3 mb-4">
             <TabsTrigger value="youtube" className="text-sm sm:text-base">

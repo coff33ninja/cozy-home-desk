@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ColorPicker } from './settings/ColorPicker';
+import { getSettings, updateSettings } from '@/lib/localStorage';
 import { useState, useEffect } from 'react';
 import { 
   fetchRadarrQueue, 
@@ -16,11 +18,19 @@ import { useNavigate } from 'react-router-dom';
 import { Settings } from 'lucide-react';
 
 export const MediaTab = () => {
+  const settings = getSettings();
+  const [bgColor, setBgColor] = useState(settings.mediaCardBg || '#1a1a1a');
   const [currentMedia, setCurrentMedia] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('arr');
   const [currentPlaylist, setCurrentPlaylist] = useState<any[]>([]);
   const [playlistType, setPlaylistType] = useState<'queue' | 'episodes' | null>(null);
   const navigate = useNavigate();
+
+  const handleColorChange = (color: string) => {
+    setBgColor(color);
+    const newSettings = { ...settings, mediaCardBg: color };
+    updateSettings(newSettings);
+  };
 
   const { data: radarrData } = useQuery({
     queryKey: ['radarrQueue'],
@@ -91,6 +101,7 @@ export const MediaTab = () => {
           radarrData={radarrData || []}
           sonarrData={sonarrData || []}
           lidarrData={lidarrData || []}
+          bgColor={bgColor}
         />
         <div className="mt-4 flex justify-end">
           <Button 
@@ -109,15 +120,20 @@ export const MediaTab = () => {
       </TabsContent>
 
       <TabsContent value="queue" className="mt-dynamic-4">
-        <Card className="relative p-dynamic-4 bg-dark-card">
+        <Card style={{ backgroundColor: bgColor }} className="relative p-dynamic-4">
           <MediaQueue
             currentMedia={currentMedia}
             playlist={currentPlaylist}
             onPlaylistItemClick={setCurrentMedia}
+            bgColor={bgColor}
             type={playlistType}
           />
         </Card>
       </TabsContent>
+
+      <div className="absolute top-2 right-2">
+        <ColorPicker color={bgColor} onChange={handleColorChange} />
+      </div>
     </Tabs>
   );
 };
