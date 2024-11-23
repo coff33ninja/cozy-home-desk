@@ -92,18 +92,10 @@ export const MediaPlayer = () => {
 
   return (
     <Card className="p-dynamic-4 relative" style={{ backgroundColor: bgColor }}>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-4 md:space-y-0">
         <h2 className="text-xl font-semibold">Media Player</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <ColorPicker color={bgColor} onChange={handleColorChange} />
-          <Button 
-            variant="outline" 
-            onClick={() => navigate('/curated-content')}
-            className="flex items-center gap-2"
-          >
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Curated Content
-          </Button>
         </div>
       </div>
       <CardContent>
@@ -118,9 +110,20 @@ export const MediaPlayer = () => {
               <Tv className="w-4 h-4 mr-dynamic-2" />
               IPTV
             </TabsTrigger>
-            <TabsTrigger value="radio" className="text-dynamic-sm">
-              <Radio className="w-4 h-4 mr-dynamic-2" />
-              Radio
+            <TabsTrigger value="radio" className="text-dynamic-sm flex items-center justify-between w-full">
+              <div className="flex items-center">
+                <Radio className="w-4 h-4 mr-dynamic-2" />
+                Radio
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate('/curated-content')}
+                className="ml-2 hidden md:flex items-center"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Curated Content
+              </Button>
             </TabsTrigger>
           </TabsList>
 
@@ -151,12 +154,22 @@ export const MediaPlayer = () => {
           </TabsContent>
 
           <TabsContent value="radio">
-            <MediaControls
-              type="radio"
-              url={radioUrl}
-              onUrlChange={setRadioUrl}
-              onPlay={handleRadioPlay}
-            />
+            <div className="space-y-4">
+              <MediaControls
+                type="radio"
+                url={radioUrl}
+                onUrlChange={setRadioUrl}
+                onPlay={handleRadioPlay}
+              />
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/curated-content')}
+                className="w-full md:hidden flex items-center justify-center gap-2"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Curated Content
+              </Button>
+            </div>
           </TabsContent>
         </Tabs>
       </CardContent>
