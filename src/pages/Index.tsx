@@ -33,7 +33,7 @@ const Index = () => {
       <div key="search" className="w-full fixed top-6 left-1/2 -translate-x-1/2 z-50 max-w-xl px-4">
         <SearchBar />
       </div>,
-      <div className="flex gap-6 mt-24" key="main-content">
+      <div className="flex gap-6 mt-24 w-full max-w-[1920px] mx-auto px-4" key="main-content">
         <div className="w-[70%] h-[calc(100vh-8rem)] overflow-auto">
           <DraggableWidget id="media" title="Media Player">
             <div className="space-y-6">
@@ -54,8 +54,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white p-4 md:p-8">
-      <div className="max-w-[1920px] mx-auto">
+    <div className="min-h-screen bg-[#111111] text-white">
+      <div className="w-full">
         <div className="fixed top-6 right-6 z-50 flex items-center gap-4">
           <Button
             variant="ghost"
