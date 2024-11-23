@@ -94,7 +94,7 @@ export const MediaPlayer = () => {
     <Card className="p-dynamic-4 relative" style={{ backgroundColor: bgColor }}>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 space-y-4 md:space-y-0">
         <h2 className="text-xl font-semibold">Media Player</h2>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-end space-x-4">
           <ColorPicker color={bgColor} onChange={handleColorChange} />
         </div>
       </div>
@@ -119,7 +119,7 @@ export const MediaPlayer = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate('/curated-content')}
-                className="ml-2 hidden md:flex items-center"
+                className="ml-2 hidden lg:flex items-center whitespace-nowrap"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 Curated Content
@@ -164,7 +164,7 @@ export const MediaPlayer = () => {
               <Button 
                 variant="outline" 
                 onClick={() => navigate('/curated-content')}
-                className="w-full md:hidden flex items-center justify-center gap-2"
+                className="w-full lg:hidden flex items-center justify-center gap-2"
               >
                 <ExternalLink className="w-4 h-4" />
                 Curated Content
