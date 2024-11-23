@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
 import { serviceIcons } from '@/lib/icons';
+import { getSettings } from '@/lib/localStorage';
 import DOMPurify from 'dompurify';
 
 declare global {

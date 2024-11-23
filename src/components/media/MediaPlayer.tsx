@@ -1,20 +1,14 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import DOMPurify from 'dompurify';
-
 interface MediaPlayerProps {
   currentMedia: string | null;
-  playlist?: any[];
-  onPlaylistItemClick?: (url: string) => void;
-  bgColor: string;
 }
 
-export const MediaPlayer = ({ currentMedia, bgColor }: MediaPlayerProps) => {
+export const MediaPlayer = ({ currentMedia }: MediaPlayerProps) => {
   if (!currentMedia) return null;
 
   const sanitizedUrl = DOMPurify.sanitize(currentMedia);
 
   return (
-    <div className="w-full" style={{ backgroundColor: bgColor }}>
+    <div className="w-full bg-background">
       {currentMedia.includes('youtube.com') ? (
         <AspectRatio ratio={16 / 9}>
           <iframe
