@@ -37,10 +37,73 @@
     font-size: 1.2rem;
   }
 }
+
 .card {
-  padding: 2em;
+  position: relative;
+  padding: 5px;
+  color: var(--card-text-color);
+  border-radius: 1rem;
+  overflow: visible;
+  transition: all 0.3s ease;
+  background: #181818;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1rem;
+  padding: 2px;
+  background: linear-gradient(var(--rotation, 0deg), #f7ba2b, #ea5358, #9b87f5, #f7ba2b);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    --rotation: 0deg;
+  }
+  to {
+    --rotation: 360deg;
+  }
 }
 
 .read-the-docs {
   color: #888;
+}
+
+/* Apply gradient border to specific components */
+.bg-dark-card,
+.backdrop-blur-md {
+  position: relative;
+  padding: 5px;
+  border-radius: 1rem;
+  overflow: visible;
+  transition: all 0.3s ease;
+  background: #181818;
+}
+
+.bg-dark-card::before,
+.backdrop-blur-md::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1rem;
+  padding: 2px;
+  background: linear-gradient(var(--rotation, 0deg), #f7ba2b, #ea5358, #9b87f5, #f7ba2b);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: spin 4s linear infinite;
+  z-index: -1;
 }
