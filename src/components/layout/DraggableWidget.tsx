@@ -69,7 +69,7 @@ export const DraggableWidget = ({ id, children, className, title }: DraggableWid
         className
       )}
     >
-      <div className="absolute top-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-2 p-2 border-b border-dark-border">
         <Button
           variant="ghost"
           size="sm"
@@ -101,13 +101,12 @@ export const DraggableWidget = ({ id, children, className, title }: DraggableWid
         >
           <GripVertical className="w-4 h-4" />
         </div>
+        {title && (
+          <div className="font-semibold">
+            {title}
+          </div>
+        )}
       </div>
-      
-      {title && (
-        <div className="px-4 py-2 font-semibold border-b border-dark-border">
-          {title}
-        </div>
-      )}
       
       <div className={cn(
         "transition-all duration-200",
