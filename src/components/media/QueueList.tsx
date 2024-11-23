@@ -1,3 +1,6 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { serviceIcons } from "@/lib/icons";
+
 interface QueueListProps {
   radarrData: any[];
   sonarrData: any[];

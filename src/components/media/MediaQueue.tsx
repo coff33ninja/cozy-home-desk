@@ -1,3 +1,8 @@
+import DOMPurify from 'dompurify';
+import { Play } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
 interface MediaQueueProps {
   currentMedia: string | null;
   playlist?: any[];

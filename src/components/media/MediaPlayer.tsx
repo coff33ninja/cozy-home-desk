@@ -1,3 +1,6 @@
+import DOMPurify from 'dompurify';
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+
 interface MediaPlayerProps {
   currentMedia: string | null;
 }
